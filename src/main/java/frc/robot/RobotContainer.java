@@ -4,9 +4,14 @@
 
 package frc.robot;
 
+import java.sql.Driver;
+
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.*;
+import frc.robot.commands.*;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -18,13 +23,18 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final DriveTrain m_driveTrain = new DriveTrain();
+  private final HandleDriveTrain m_handleDriveTrain = new HandleDriveTrain(m_driveTrain);
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  private static Joystick leftJoystick;
+  private static Joystick rightJoystick;
+  private static Joystick mechanismJoystick;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
+    m_driveTrain.setDefaultCommand(m_handleDriveTrain);
+    
     configureButtonBindings();
   }
 
@@ -34,8 +44,24 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    leftJoystick = new Joystick(Constants.joy1);
+    rightJoystick = new Joystick(Constants.joy2);
+    mechanismJoystick = new Joystick(Constants.joy3);
+  }
+  
+  public static Joystick getLeftJoy() {
+    return leftJoystick;
+  }
 
+  /** Return the right Joystick */
+  public static Joystick getRightJoy() {
+    return rightJoystick;
+  }
+
+  public static Joystick getMechanismJoystick() {
+    return mechanismJoystick;
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -43,6 +69,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return m_handleDriveTrain;
   }
 }
