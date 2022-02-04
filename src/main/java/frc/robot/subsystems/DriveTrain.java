@@ -17,16 +17,16 @@ public class DriveTrain extends SubsystemBase {
 
   //Drive train left side motors
   private final WPI_TalonFX[] m_leftMotors = {
-    new WPI_TalonFX(Constants.FRONT_ONE_PIN),
-    new WPI_TalonFX(Constants.FRONT_TWO_PIN),
+    new WPI_TalonFX(Constants.DrivetrainConstants.LEFT_FRONT_PIN),
+    new WPI_TalonFX(Constants.DrivetrainConstants.LEFT_BACK_PIN),
   };
   private final MotorControllerGroup m_leftControllerGroup = new MotorControllerGroup(m_leftMotors);
 
 
   //Drive train right side motors
   private final WPI_TalonFX[] m_rightMotors = {
-    new WPI_TalonFX(Constants.BACK_ONE_PIN),
-    new WPI_TalonFX(Constants.BACK_TWO_PIN),
+    new WPI_TalonFX(Constants.DrivetrainConstants.RIGHT_FRONT_PIN),
+    new WPI_TalonFX(Constants.DrivetrainConstants.RIGHT_BACK_PIN),
   };
   private final MotorControllerGroup m_rightControllerGroup = new MotorControllerGroup(m_rightMotors);
 
@@ -47,17 +47,17 @@ public class DriveTrain extends SubsystemBase {
     m_rightEncoder = m_rightMotors[0].getSensorCollection();
 
     m_leftControllerGroup.setInverted(false);
-    m_rightControllerGroup.setInverted(false);
+    m_rightControllerGroup.setInverted(true);
 
   }
 
   public void drive(double l, double r){
-    m_leftControllerGroup.set(l * Constants.Drivetrain.speedLmt);
-    m_rightControllerGroup.set(-r * Constants.Drivetrain.speedLmt);
+    m_leftControllerGroup.set(l * Constants.DrivetrainConstants.speedLmt);
+    m_rightControllerGroup.set(-r * Constants.DrivetrainConstants.speedLmt);
   }
 
   public void arcadeDrive(double fwd, double rot) {
-    m_drive.arcadeDrive(fwd, rot);
+    m_drive.arcadeDrive(fwd * Constants.DrivetrainConstants.speedLmt, rot * Constants.DrivetrainConstants.speedLmt);
 }
 
   @Override

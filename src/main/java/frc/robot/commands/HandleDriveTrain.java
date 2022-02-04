@@ -4,7 +4,10 @@
 
 package frc.robot.commands;
 
+import org.opencv.features2d.KAZE;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveTrain;
@@ -30,9 +33,9 @@ public class HandleDriveTrain extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double leftValue = Math.abs(RobotContainer.getLeftJoy().getX()) > .05 ? RobotContainer.getLeftJoy().getX() : 0;
-    double rightValue = Math.abs(RobotContainer.getRightJoy().getY())> .05 ? RobotContainer.getRightJoy().getY() : 0;
-    m_driveTrain.arcadeDrive(rightValue, leftValue);
+    double pow = Math.abs(RobotContainer.getGamepad().getRawAxis(Constants.kGamepadAxisLeftStickX)) > .05 ? RobotContainer.getGamepad().getRawAxis(Constants.kGamepadAxisLeftStickX) : 0;
+    double turn = Math.abs(RobotContainer.getGamepad().getRawAxis(Constants.kGamepadAxisRightStickX))> .05 ? RobotContainer.getGamepad().getRawAxis(Constants.kGamepadAxisRightStickX) : 0;
+    m_driveTrain.arcadeDrive(pow, turn);
   }
 
   // Called once the command ends or is interrupted.
