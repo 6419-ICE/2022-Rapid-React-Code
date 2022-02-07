@@ -16,13 +16,11 @@ import frc.robot.subsystems.Intake.armStates;
 public class HandleIntake extends CommandBase {
 
   private final Intake m_intake;
-  private armStates armState;
   private boolean sensorState;
 
   /** Creates a new HandleIntake. */
   public HandleIntake(Intake intake) {
     m_intake = intake;
-    armState = armStates.RAISED;
     addRequirements(m_intake);
   }
 
@@ -32,7 +30,6 @@ public class HandleIntake extends CommandBase {
     m_intake.stopIntakeArm();
     m_intake.stopIntakeMotor();
     sensorState = m_intake.getMagnetDigitalInput();
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -54,29 +51,29 @@ public class HandleIntake extends CommandBase {
       m_intake.stopIntakeArm();
     }
 */
-    if(sensorState && armState == armStates.RAISED && RobotContainer.getLowerIntakeButton()){
-      armState = armStates.LOWERING;
-    } else if(sensorState && armState == armStates.LOWERED && RobotContainer.getRaiseIntakeButton()){
-      armState = armStates.RAISING;
+    if(sensorState && m_intake.getCurrentArmState() == armStates.RAISED && RobotContainer.getLowerIntakeButton()){
+      m_intake.setArmState(armStates.LOWERING);
+    } else if(sensorState && m_intake.getCurrentArmState() == armStates.LOWERED && RobotContainer.getRaiseIntakeButton()){
+      m_intake.setArmState(armStates.RAISING);
     }
 
-    if(armState == armStates.RAISING){
+    if(m_intake.getCurrentArmState() == armStates.RAISING){
       if(sensorState && !m_intake.getMagnetDigitalInput()){
         sensorState = false;
       } else if(!sensorState && m_intake.getMagnetDigitalInput()){
         sensorState = true;
-        armState = armState.RAISED;
+        m_intake.setArmState(armStates.RAISED);
       } else {
         m_intake.raiseIntakeArm();
       }
     }
 
-    if(armState == armStates.LOWERING){
+    if(m_intake.getCurrentArmState() == armStates.LOWERING){
       if(sensorState && !m_intake.getMagnetDigitalInput()){
         sensorState = false;
       } else if(!sensorState && m_intake.getMagnetDigitalInput()){
         sensorState = true;
-        armState = armState.LOWERED;
+        m_intake.setArmState(armStates.LOWERED);
       } else {
         m_intake.lowerIntakeArm();
       }
@@ -95,7 +92,7 @@ public class HandleIntake extends CommandBase {
   }
 
   private String returnArmState(){
-    return armState.toString();
+    return m_intake.getCurrentArmState().toString();
   }
 
   @Override

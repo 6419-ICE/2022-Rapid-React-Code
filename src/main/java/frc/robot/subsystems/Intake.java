@@ -18,10 +18,19 @@ public class Intake extends SubsystemBase {
   private final TalonSRX intakeMotor = new TalonSRX(Constants.IntakeConstants.INTAKE_MOTOR_PIN);
 
   private final DigitalInput hEffectSensor = new DigitalInput(Constants.IntakeConstants.H_EFFECT_PORT);
+
+  public static enum armStates {
+    RAISED,
+    LOWERED,
+    RAISING,
+    LOWERING
+  };
+
+  private armStates armState;
   
   /** Creates a new Intake. */
   public Intake() {
-
+    armState = armStates.RAISED;
   }
 
   /**Getter for intake motor object */
@@ -72,6 +81,14 @@ public class Intake extends SubsystemBase {
 
   public boolean getMagnetDigitalInput() {
     return !hEffectSensor.get();
+  }
+
+  public armStates getCurrentArmState() {
+    return armState;
+  }
+
+  public void setArmState(armStates state){
+    armState = state;
   }
 
   @Override
