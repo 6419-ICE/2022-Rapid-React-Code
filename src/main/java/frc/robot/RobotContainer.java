@@ -9,10 +9,8 @@ import java.sql.Driver;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.*;
 import frc.robot.commands.*;
-import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -25,9 +23,12 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveTrain m_driveTrain = new DriveTrain();
   private final Intake m_intake = new Intake();
+  private final Uptake m_uptake = new Uptake();
+  private final Shooter m_shooter = new Shooter();
 
   private final HandleDriveTrain m_handleDriveTrain = new HandleDriveTrain(m_driveTrain);
   private final HandleIntake m_handleIntake = new HandleIntake(m_intake);
+  private final HandleUptakeShooter m_handleUptakeShooter = new HandleUptakeShooter(m_uptake, m_shooter);
 
   private static Joystick leftJoystick;
   private static Joystick rightJoystick;
@@ -39,6 +40,8 @@ public class RobotContainer {
     // Configure the button bindings
     m_driveTrain.setDefaultCommand(m_handleDriveTrain);
     m_intake.setDefaultCommand(m_handleIntake);
+    m_uptake.setDefaultCommand(m_handleUptakeShooter);
+    m_shooter.setDefaultCommand(m_handleUptakeShooter);
 
     configureButtonBindings();
   }
@@ -89,6 +92,14 @@ public class RobotContainer {
 
   public static boolean getReverseIntakeButton() {
     return gamepadController.getRawAxis(3) > .7;
+  }
+
+  public static boolean getRunUptakeButton(){
+    return gamepadController.getRawButton(1);
+  }
+
+  public static boolean getShooterButton(){
+    return gamepadController.getRawButton(4);
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

@@ -37,6 +37,7 @@ public class HandleIntake extends CommandBase {
   public void execute() {
     if(RobotContainer.getReverseIntakeButton()){
       m_intake.reverseIntakeMotor();
+
     }else if(RobotContainer.getRunIntakeButton()){
       m_intake.runIntakeMotor();
     } else {

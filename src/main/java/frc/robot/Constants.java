@@ -17,7 +17,7 @@ public final class Constants {
     //Constants for the drive train
     public static class DrivetrainConstants{
         //Universal motor speed limit
-        public static final double speedLmt = .4;
+        public static final double speedLmt = .45;
 
         //Drive train encoder values
         public static final double gearboxRatio = 1;
@@ -35,7 +35,6 @@ public final class Constants {
         public static final int
             INTAKE_ARM_PIN = 5,
             INTAKE_MOTOR_PIN = 6;
-
         
         public static final int
             H_EFFECT_PORT = 0;
@@ -43,6 +42,37 @@ public final class Constants {
         public static final double
             armSpdLmt = .4,
             motorSpdLmt = .7;
+    }
+
+    public static class UptakeConstants {
+        public static final int
+            UPTAKE_MOTOR_PIN = 7,
+            LOADER_MOTOR_PIN = 8;
+
+        public static final int
+            LOAD_SENSOR_PORT = 1;
+
+        public static final double
+            uptakeMotorLmt = .9,
+            loadMotorLmt = .4;
+    }
+
+    public static class ShooterConstants {
+        public static final int SHOOTER_MOTOR_PIN = 9;
+
+        public static final double SHOOTER_FIRING_SPEED = 12000.0;
+
+        public static final int kPIDLoopIdx = 0;
+        public static final int kTimeoutMs = 30;
+
+        public static final int kP = 30;
+        public static final int kI = 30;
+        public static final int kD = 30;
+
+    }
+
+    public static class HangerConstants {
+
     }
 
     public static final int joy1 = 0, joy2 = 1, joy3 = 2;
