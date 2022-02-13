@@ -11,15 +11,17 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Uptake;
 import frc.robot.subsystems.Intake.armStates;
 
 public class HandleIntake extends CommandBase {
 
   private final Intake m_intake;
+
   private boolean sensorState;
 
   /** Creates a new HandleIntake. */
-  public HandleIntake(Intake intake) {
+  public HandleIntake(Intake intake){
     m_intake = intake;
     addRequirements(m_intake);
   }
@@ -29,6 +31,7 @@ public class HandleIntake extends CommandBase {
   public void initialize() {
     m_intake.stopIntakeArm();
     m_intake.stopIntakeMotor();
+
     sensorState = m_intake.getMagnetDigitalInput();
   }
 

@@ -31,6 +31,7 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   public Intake() {
     armState = armStates.RAISED;
+    intakeMotor.setInverted(true);
   }
 
   /**Getter for intake motor object */
