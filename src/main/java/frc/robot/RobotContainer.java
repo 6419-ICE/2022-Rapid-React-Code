@@ -59,8 +59,8 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     /*leftJoystick = new Joystick(Constants.joy1);
-    rightJoystick = new Joystick(Constants.joy2);
-    mechanismJoystick = new Joystick(Constants.joy3);*/
+    rightJoystick = new Joystick(Constants.joy2);*/
+    mechanismJoystick = new Joystick(Constants.buttonBox);
     gamepadController = new Joystick(Constants.gamepadJoy);
     /*
     JoystickButton shootLowButton = new JoystickButton(gamepadController, 2);
@@ -79,41 +79,54 @@ public class RobotContainer {
   /** Return the right Joystick 
   public static Joystick getRightJoy() {
     return rightJoystick;
-  }
+  }*/
 
   public static Joystick getMechanismJoystick() {
     return mechanismJoystick;
-  }*/
+  }
 
   public static Joystick getGamepad() {
     return gamepadController;
   }
 
-  public static boolean getLowerIntakeButton() {
-    return gamepadController.getRawButton(Constants.kGamepadButtonShoulderL);
-  }
+  // public static boolean getLowerIntakeButton() {
+  //   return -mechanismJoystick.getRawAxis(Constants.gamepadConstants.moveIntakeAxis) < 0;
+  // }
 
-  public static boolean getRaiseIntakeButton() {
-    return gamepadController.getRawButton(Constants.kGamepadButtonShoulderR);
-  }
+  // public static boolean getRaiseIntakeButton() {
+  //   return -mechanismJoystick.getRawAxis(Constants.gamepadConstants.moveIntakeAxis) > 0;
+  // }
 
   public static boolean getRunIntakeButton() {
-    return gamepadController.getRawAxis(2) > .7;
+    return mechanismJoystick.getRawButton(Constants.gamepadConstants.runIntakeButton);
   }
 
   public static boolean getReverseIntakeButton() {
-    return gamepadController.getRawAxis(3) > .7;
+    return mechanismJoystick.getRawButton(Constants.gamepadConstants.reverseIntakeButton);
   }
 
   public static boolean getRunUptakeButton(){
-    return gamepadController.getRawButton(1);
+    return mechanismJoystick.getRawButton(Constants.gamepadConstants.runUptakeButton);
+  }
+
+  public static boolean getReverseUptakeButton() {
+    return mechanismJoystick.getRawButton(Constants.gamepadConstants.reverseUptakeButton);
   }
 
   public static boolean getShooterHighButton(){
-    return gamepadController.getRawButton(2);
+    return mechanismJoystick.getRawButton(Constants.gamepadConstants.shooterHighButton);
   }
+
   public static boolean getShooterLowButton(){
-    return gamepadController.getRawButton(3);
+    return mechanismJoystick.getRawButton(Constants.gamepadConstants.shooterLowButton);
+  }
+
+  public static double getDriveTrainForward(){
+    return Utilities.applyDeadband(-gamepadController.getRawAxis(Constants.gamepadConstants.kGamepadAxisLeftStickY), 0.03);
+  }
+
+  public static double getDriveTrainTurn(){
+    return Utilities.applyDeadband(gamepadController.getRawAxis(Constants.gamepadConstants.kGamepadAxisRightStickX), 0.03);
   }
   
   /**

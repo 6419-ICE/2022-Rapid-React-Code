@@ -53,8 +53,21 @@ public class HandleUptakeShooter extends CommandBase {
           m_uptake.setUptakePower(.6);
           if (m_uptake.isCargoPresent()){
             m_uptake.runLoader();
-          }
+          } 
       } 
+    }
+    if(!RobotContainer.getShooterLowButton() && !RobotContainer.getShooterHighButton()){
+      m_shooter.spoolDown();
+    }
+
+    if(RobotContainer.getRunUptakeButton() && !m_uptake.isCargoPresent()){
+      m_uptake.runUptake();
+    } else if(RobotContainer.getReverseUptakeButton()){
+      m_uptake.reverseUptake();
+    }
+
+    if(m_uptake.isCargoPresent()){
+      m_uptake.stopUptake();
     }
 
   }

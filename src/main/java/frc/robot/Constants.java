@@ -76,31 +76,37 @@ public final class Constants {
 
     }
 
-    public static final int joy1 = 0, joy2 = 1, joy3 = 2;
+    public static final int joy1 = 0, buttonBox = 1, joy3 = 2;
 
     public static final int gamepadJoy = 0;
 
     	// Gamepad axis
-	public static final int kGamepadAxisLeftStickX = 1;
-	public static final int kGamepadAxisLeftStickY = 2;
-	public static final int kGamepadAxisShoulder = 3;
-	public static final int kGamepadAxisRightStickX = 4;
-	public static final int kGamepadAxisRightStickY = 5;
-	public static final int kGamepadAxisDpad = 6;
+    public static class gamepadConstants{
+        public static final int kGamepadAxisLeftStickX = 0;
+        public static final int kGamepadAxisLeftStickY = 1;
+        public static final int kGamepadAxisShoulderLeft = 2;
+        public static final int kGamepadAxisShoulderRight = 3;
+        public static final int kGamepadAxisRightStickX = 4;
+        public static final int kGamepadAxisRightStickY = 5;
+        
 
-	// Gamepad buttons
-	public static final int kGamepadButtonA = 1; // Bottom Button
-	public static final int kGamepadButtonB = 2; // Right Button
-	public static final int kGamepadButtonX = 3; // Left Button
-	public static final int kGamepadButtonY = 4; // Top Button
-	public static final int kGamepadButtonShoulderL = 5;
-	public static final int kGamepadButtonShoulderR = 6;
-	public static final int kGamepadButtonBack = 7;
-	public static final int kGamepadButtonStart = 8;
-	public static final int kGamepadButtonLeftStick = 9;
-	public static final int kGamepadButtonRightStick = 10;
-	public static final int kGamepadButtonMode = -1;
-	public static final int kGamepadButtonLogitech = -1;
+        // Gamepad 2 buttons
+        public static final int runIntakeButton = 1; // Bottom Button
+        public static final int runUptakeButton = 2; // Right Button
+        public static final int button3 = 3; // Left Button
+        public static final int button4 = 4; // Top Button
+        public static final int button5 = 5;
+        public static final int reverseIntakeButton = 6;
+        public static final int reverseUptakeButton = 7;
+        public static final int button8 = 8;
+        public static final int shooterLowButton = 9;
+        public static final int shooterHighButton = 10;
+        public static final int kGamepadButtonMode = -1;
+        public static final int kGamepadButtonLogitech = -1;
+
+        // Gamepad 2 axis 
+        //public static final int moveIntakeAxis = 1;
+    }
 
 
 }

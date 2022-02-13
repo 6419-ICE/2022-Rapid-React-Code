@@ -54,11 +54,11 @@ public class HandleIntake extends CommandBase {
       m_intake.stopIntakeArm();
     }
 */
-    if(sensorState && m_intake.getCurrentArmState() == armStates.RAISED && RobotContainer.getLowerIntakeButton()){
-      m_intake.setArmState(armStates.LOWERING);
-    } else if(sensorState && m_intake.getCurrentArmState() == armStates.LOWERED && RobotContainer.getRaiseIntakeButton()){
-      m_intake.setArmState(armStates.RAISING);
-    }
+    // if(sensorState && m_intake.getCurrentArmState() == armStates.RAISED && RobotContainer.getLowerIntakeButton()){
+    //   m_intake.setArmState(armStates.LOWERING);
+    // } else if(sensorState && m_intake.getCurrentArmState() == armStates.LOWERED && RobotContainer.getRaiseIntakeButton()){
+    //   m_intake.setArmState(armStates.RAISING);
+    // }
 
     if(m_intake.getCurrentArmState() == armStates.RAISING){
       if(sensorState && !m_intake.getMagnetDigitalInput()){

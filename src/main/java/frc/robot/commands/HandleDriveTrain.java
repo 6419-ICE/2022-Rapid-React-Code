@@ -34,8 +34,8 @@ public class HandleDriveTrain extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double power = Utilities.applyDeadband(-RobotContainer.getGamepad().getRawAxis(Constants.kGamepadAxisLeftStickX), 0.03);
-    double turn = Utilities.applyDeadband(RobotContainer.getGamepad().getRawAxis(Constants.kGamepadAxisRightStickX), 0.03);
+    double power = RobotContainer.getDriveTrainForward();
+    double turn = RobotContainer.getDriveTrainTurn();
     power = Math.copySign(Math.abs(Math.pow(power, 2)), power);
     turn = Math.copySign(Math.abs(Math.pow(turn, 2)), turn);
     m_driveTrain.arcadeDrive(power, turn);
