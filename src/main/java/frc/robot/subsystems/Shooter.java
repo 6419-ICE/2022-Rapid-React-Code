@@ -18,6 +18,11 @@ import frc.robot.Constants;
 public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
 
+  public static enum shooterStates {
+    LOW,
+    HIGH
+  }
+
   private final WPI_TalonFX m_shooterMotor = new WPI_TalonFX(Constants.ShooterConstants.SHOOTER_MOTOR_PIN);
 
   private final TalonFXSensorCollection m_shooterEncoder;
@@ -27,7 +32,7 @@ public class Shooter extends SubsystemBase {
     m_shooterMotor.setInverted(true);
 
     m_shooterMotor.configOpenloopRamp(0.5);
-    m_shooterMotor.configClosedloopRamp(2.5);
+    m_shooterMotor.configClosedloopRamp(0);
 
     m_shooterMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 30);
     /* Config the peak and nominal outputs */
@@ -44,16 +49,25 @@ public class Shooter extends SubsystemBase {
     m_shooterEncoder = m_shooterMotor.getSensorCollection();
   }
 
-  public void spoolUp() {
-    m_shooterMotor.set(ControlMode.Velocity, Constants.ShooterConstants.SHOOTER_FIRING_SPEED);
+  public void spoolUpHigh() {
+    m_shooterMotor.set(ControlMode.Velocity, Constants.ShooterConstants.SHOOTER_HIGH_FIRING_SPEED);
+  }
+  
+  public void spoolUpLow() {
+    //m_shooterMotor.set(ControlMode.Velocity, Constants.ShooterConstants.SHOOTER_LOW_FIRING_SPEED);
+    m_shooterMotor.set(ControlMode.PercentOutput, .5);
   }
 
   public void spoolDown(){
     m_shooterMotor.set(ControlMode.PercentOutput, 0);
   }
 
-  public boolean isShooterReady() {
-    return (m_shooterEncoder.getIntegratedSensorVelocity() < -Constants.ShooterConstants.SHOOTER_FIRING_SPEED*.98);
+  public boolean isShooterReadyHigh() {
+    return (m_shooterEncoder.getIntegratedSensorVelocity() < -Constants.ShooterConstants.SHOOTER_HIGH_FIRING_SPEED*.98);
+  }
+
+  public boolean isShooterReadyLow() {
+    return (m_shooterEncoder.getIntegratedSensorVelocity() < -Constants.ShooterConstants.SHOOTER_LOW_FIRING_SPEED*.98);
   }
 
   public double getShooterSpeed(){
@@ -66,7 +80,8 @@ public class Shooter extends SubsystemBase {
   }
   @Override
   public void initSendable(SendableBuilder builder) {
-    builder.addBooleanProperty("Is Shooter Ready", this::isShooterReady, null);
     builder.addDoubleProperty("Shooter Speed", this::getShooterSpeed, null);
+    builder.addBooleanProperty("Shooter Low Ready", this::isShooterReadyLow, null);
+    builder.addBooleanProperty("Shooter High Ready", this::isShooterReadyHigh, null);
   }
 }

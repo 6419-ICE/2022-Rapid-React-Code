@@ -17,7 +17,7 @@ public final class Constants {
     //Constants for the drive train
     public static class DrivetrainConstants{
         //Universal motor speed limit
-        public static final double speedLmt = .45;
+        public static final double speedLmt = .4;
 
         //Drive train encoder values
         public static final double gearboxRatio = 1;
@@ -60,14 +60,15 @@ public final class Constants {
     public static class ShooterConstants {
         public static final int SHOOTER_MOTOR_PIN = 9;
 
-        public static final double SHOOTER_FIRING_SPEED = 12000.0;
+        public static final double SHOOTER_HIGH_FIRING_SPEED = 12000.0;
+        public static final double SHOOTER_LOW_FIRING_SPEED = 7000.0;
 
         public static final int kPIDLoopIdx = 0;
         public static final int kTimeoutMs = 30;
 
-        public static final int kP = 30;
-        public static final int kI = 30;
-        public static final int kD = 30;
+        public static final double kP = .3;
+        public static final double kI = .00;
+        public static final double kD = 0.001;
 
     }
 

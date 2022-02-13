@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.Utilities;
 import frc.robot.subsystems.DriveTrain;
 
 public class HandleDriveTrain extends CommandBase {
@@ -33,9 +34,11 @@ public class HandleDriveTrain extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double pow = Math.abs(RobotContainer.getGamepad().getRawAxis(Constants.kGamepadAxisLeftStickX)) > .05 ? RobotContainer.getGamepad().getRawAxis(Constants.kGamepadAxisLeftStickX) : 0;
-    double turn = Math.abs(RobotContainer.getGamepad().getRawAxis(Constants.kGamepadAxisRightStickX))> .05 ? RobotContainer.getGamepad().getRawAxis(Constants.kGamepadAxisRightStickX) : 0;
-    m_driveTrain.arcadeDrive(pow, turn);
+    double power = Utilities.applyDeadband(-RobotContainer.getGamepad().getRawAxis(Constants.kGamepadAxisLeftStickX), 0.03);
+    double turn = Utilities.applyDeadband(RobotContainer.getGamepad().getRawAxis(Constants.kGamepadAxisRightStickX), 0.03);
+    power = Math.copySign(Math.abs(Math.pow(power, 2)), power);
+    turn = Math.copySign(Math.abs(Math.pow(turn, 2)), turn);
+    m_driveTrain.arcadeDrive(power, turn);
   }
 
   // Called once the command ends or is interrupted.

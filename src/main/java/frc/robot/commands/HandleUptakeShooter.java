@@ -6,27 +6,30 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Shooter.shooterStates;
 
 public class HandleUptakeShooter extends CommandBase {
   /** Creates a new HandleUptakeShooter. */
   private final Uptake m_uptake;
   private final Shooter m_shooter;
-  Double time = (Double) null;
 
-  public HandleUptakeShooter(Uptake uptake, Shooter shooter) {
+  private shooterStates m_shooterState;
+
+  public HandleUptakeShooter(Uptake uptake, Shooter shooter, shooterStates shooterState) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_uptake = uptake;
     m_shooter = shooter;
+    m_shooterState = shooterState;
     addRequirements(m_uptake, m_shooter);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_uptake.stopLoader();
-    m_uptake.stopUptake();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -34,26 +37,33 @@ public class HandleUptakeShooter extends CommandBase {
   public void execute() {
 
 
-    if(RobotContainer.getShooterButton() && m_uptake.isCargoPresent()){
-      m_shooter.spoolUp();
-      if(m_shooter.isShooterReady()){
+    if(RobotContainer.getShooterHighButton()){
+      m_shooter.spoolUpHigh();
+      if(m_shooter.isShooterReadyHigh()){
         m_uptake.runLoader();
-        m_uptake.setUptakePower(.4);
+        if(m_uptake.isCargoPresent()){
+          m_uptake.setUptakePower(.6);
+        }
       }
-    }else if (!RobotContainer.getShooterButton()){
-      m_shooter.spoolDown();
-      m_uptake.stopLoader();
-      m_uptake.stopUptake();
     }
-    if(RobotContainer.getRunUptakeButton() && !m_uptake.isCargoPresent()){
-      m_uptake.runUptake();
+
+    if(RobotContainer.getShooterLowButton()){
+      m_shooter.spoolUpLow();
+      if(m_shooter.isShooterReadyLow()){
+          m_uptake.setUptakePower(.6);
+          if (m_uptake.isCargoPresent()){
+            m_uptake.runLoader();
+          }
+      } 
     }
-    
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_shooter.spoolDown();
+  }
 
   // Returns true when the command should end.
   @Override
