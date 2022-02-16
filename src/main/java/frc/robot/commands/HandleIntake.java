@@ -17,13 +17,15 @@ import frc.robot.subsystems.Intake.armStates;
 public class HandleIntake extends CommandBase {
 
   private final Intake m_intake;
+  private final Uptake m_uptake;
 
   private boolean sensorState;
 
   /** Creates a new HandleIntake. */
-  public HandleIntake(Intake intake){
+  public HandleIntake(Intake intake, Uptake uptake) {
     m_intake = intake;
-    addRequirements(m_intake);
+    m_uptake = uptake;
+    addRequirements(m_intake, m_uptake);
   }
 
   // Called when the command is initially scheduled.
@@ -31,7 +33,8 @@ public class HandleIntake extends CommandBase {
   public void initialize() {
     m_intake.stopIntakeArm();
     m_intake.stopIntakeMotor();
-
+    m_uptake.stopLoader();
+    m_uptake.stopUptake();
     sensorState = m_intake.getMagnetDigitalInput();
   }
 
@@ -42,8 +45,12 @@ public class HandleIntake extends CommandBase {
       m_intake.reverseIntakeMotor();
     }else if(RobotContainer.getRunIntakeButton()){
       m_intake.runIntakeMotor();
+      if(!m_uptake.isCargoPresent()){
+        m_uptake.runUptake();
+      }
     } else {
       m_intake.stopIntakeMotor();
+      m_uptake.stopUptake();
     }
 /*
     if(RobotContainer.getLowerIntakeButton()){

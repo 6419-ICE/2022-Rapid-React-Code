@@ -14,6 +14,8 @@ import frc.robot.subsystems.Intake.armStates;
 import frc.robot.subsystems.Shooter.shooterStates;
 import frc.robot.commands.*;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.ProxyScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
@@ -30,10 +32,11 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter();
 
   private final HandleDriveTrain m_handleDriveTrain = new HandleDriveTrain(m_driveTrain);
-  private final HandleIntake m_handleIntake = new HandleIntake(m_intake);
-  private final HandleUptakeShooter m_handleShooter = new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.LOW);
+  private final HandleIntake m_handleIntake = new HandleIntake(m_intake, m_uptake);
+  private final HandleShooter m_handleShooter = new HandleShooter(m_shooter);
   private final HandleUptakeShooter m_shootLow = new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.LOW);
   private final HandleUptakeShooter m_shootHigh = new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.HIGH);
+ // private final ConditionalCommand cCommand = new ConditionalCommand(m_shootLow, m_shooter, RobotContainer.getShooterLowButton());
 
   private static Joystick leftJoystick;
   private static Joystick rightJoystick;
@@ -43,12 +46,15 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
+    configureButtonBindings();
+
     m_driveTrain.setDefaultCommand(m_handleDriveTrain);
     m_intake.setDefaultCommand(m_handleIntake);
-    m_uptake.setDefaultCommand(m_handleShooter);
-    m_shooter.setDefaultCommand(m_handleShooter);
+    m_uptake.setDefaultCommand(m_handleIntake);
+    //m_shooter.setDefaultCommand();
 
-    configureButtonBindings();
+
+
   }
 
   /**
@@ -62,12 +68,12 @@ public class RobotContainer {
     rightJoystick = new Joystick(Constants.joy2);
     mechanismJoystick = new Joystick(Constants.joy3);*/
     gamepadController = new Joystick(Constants.gamepadJoy);
-    /*
+
     JoystickButton shootLowButton = new JoystickButton(gamepadController, 2);
     JoystickButton shootHighButton = new JoystickButton(gamepadController, 3);
 
-    shootLowButton.whenHeld(new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.LOW));
-    shootHighButton.whenHeld(m_shootHigh);*/
+    shootLowButton.whenHeld(new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.LOW), false);
+    shootHighButton.whenHeld(new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.HIGH), false);
 
   }
   

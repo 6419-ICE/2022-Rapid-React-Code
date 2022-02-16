@@ -32,7 +32,7 @@ public class Shooter extends SubsystemBase {
     m_shooterMotor.setInverted(true);
 
     m_shooterMotor.configOpenloopRamp(0.5);
-    m_shooterMotor.configClosedloopRamp(0);
+    m_shooterMotor.configClosedloopRamp(.75);
 
     m_shooterMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 30);
     /* Config the peak and nominal outputs */
@@ -55,7 +55,7 @@ public class Shooter extends SubsystemBase {
   
   public void spoolUpLow() {
     //m_shooterMotor.set(ControlMode.Velocity, Constants.ShooterConstants.SHOOTER_LOW_FIRING_SPEED);
-    m_shooterMotor.set(ControlMode.PercentOutput, .5);
+    m_shooterMotor.set(ControlMode.Velocity, Constants.ShooterConstants.SHOOTER_LOW_FIRING_SPEED);
   }
 
   public void spoolDown(){
@@ -63,11 +63,15 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isShooterReadyHigh() {
-    return (m_shooterEncoder.getIntegratedSensorVelocity() < -Constants.ShooterConstants.SHOOTER_HIGH_FIRING_SPEED*.98);
+    return (m_shooterEncoder.getIntegratedSensorVelocity() < -Constants.ShooterConstants.SHOOTER_HIGH_FIRING_SPEED*.9);
   }
 
   public boolean isShooterReadyLow() {
-    return (m_shooterEncoder.getIntegratedSensorVelocity() < -Constants.ShooterConstants.SHOOTER_LOW_FIRING_SPEED*.98);
+    return (m_shooterEncoder.getIntegratedSensorVelocity() < -Constants.ShooterConstants.SHOOTER_LOW_FIRING_SPEED*.9);
+  }
+  public boolean timerReady(double init, double wait) {
+    double currentTime = Timer.getFPGATimestamp();
+    return currentTime > init + wait;
   }
 
   public double getShooterSpeed(){

@@ -15,6 +15,7 @@ public class HandleUptakeShooter extends CommandBase {
   /** Creates a new HandleUptakeShooter. */
   private final Uptake m_uptake;
   private final Shooter m_shooter;
+  private double time;
 
   private shooterStates m_shooterState;
 
@@ -29,7 +30,7 @@ public class HandleUptakeShooter extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    time = Timer.getFPGATimestamp();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -37,9 +38,9 @@ public class HandleUptakeShooter extends CommandBase {
   public void execute() {
 
 
-    if(RobotContainer.getShooterHighButton()){
+    if(m_shooterState == shooterStates.HIGH){
       m_shooter.spoolUpHigh();
-      if(m_shooter.isShooterReadyHigh()){
+      if(m_shooter.timerReady(time, 1.5)){
         m_uptake.runLoader();
         if(m_uptake.isCargoPresent()){
           m_uptake.setUptakePower(.6);
@@ -47,16 +48,15 @@ public class HandleUptakeShooter extends CommandBase {
       }
     }
 
-    if(RobotContainer.getShooterLowButton()){
+    if(m_shooterState == shooterStates.LOW){
       m_shooter.spoolUpLow();
-      if(m_shooter.isShooterReadyLow()){
+      if(m_shooter.timerReady(time, 1.5)){
           m_uptake.setUptakePower(.6);
           if (m_uptake.isCargoPresent()){
             m_uptake.runLoader();
           }
       } 
     }
-
   }
 
   // Called once the command ends or is interrupted.
