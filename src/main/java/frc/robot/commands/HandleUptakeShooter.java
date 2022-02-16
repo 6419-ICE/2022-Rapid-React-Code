@@ -54,7 +54,7 @@ public class HandleUptakeShooter extends CommandBase {
           m_uptake.setUptakePower(.6);
           if (m_uptake.isCargoPresent()){
             m_uptake.runLoader();
-          }
+          } 
       } 
     }
   }
