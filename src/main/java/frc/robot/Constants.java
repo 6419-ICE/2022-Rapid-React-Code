@@ -64,15 +64,15 @@ public final class Constants {
     public static class ShooterConstants {
         public static final int SHOOTER_MOTOR_PIN = 9;
 
-        public static final double SHOOTER_HIGH_FIRING_SPEED = 12000.0;
+        public static final double SHOOTER_HIGH_FIRING_SPEED = 13000.0;
         public static final double SHOOTER_LOW_FIRING_SPEED = 7000.0;
 
         public static final int kPIDLoopIdx = 0;
         public static final int kTimeoutMs = 30;
 
-        public static final double kP = .3;
-        public static final double kI = .00;
-        public static final double kD = 0.001;
+        public static final double kP = 0.235;
+        public static final double kI = 0;
+        public static final double kD = 0.15;
 
     }
 
