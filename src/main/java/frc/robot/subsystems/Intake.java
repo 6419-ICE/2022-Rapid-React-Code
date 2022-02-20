@@ -9,8 +9,11 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 
 public class Intake extends SubsystemBase {
 
@@ -27,11 +30,12 @@ public class Intake extends SubsystemBase {
   };
 
   private armStates armState;
+
+  private static SendableChooser<armStates> armStateChooser;
   
   /** Creates a new Intake. */
   public Intake() {
-    armState = armStates.RAISED;
-    intakeMotor.setInverted(true);
+    intakeMotor.setInverted(false);
   }
 
   /**Getter for intake motor object */
@@ -91,6 +95,14 @@ public class Intake extends SubsystemBase {
   public void setArmState(armStates state){
     armState = state;
   }
+  
+  private String returnArmState(){
+    return armState.toString();
+  }
+
+  public armStates getSelectedArmState(){
+    return armStateChooser.getSelected();
+  }
 
   @Override
   public void periodic() {
@@ -100,5 +112,14 @@ public class Intake extends SubsystemBase {
   @Override
   public void initSendable(SendableBuilder builder) {
     builder.addBooleanProperty("Hall Effect", this::getMagnetDigitalInput, null);
+    builder.addStringProperty("Arm State", this::returnArmState, null);
+
+    armStateChooser = new SendableChooser<>();
+    armStateChooser.setDefaultOption("Raised", armStates.RAISED);
+    armStateChooser.addObject("Lowered", armStates.LOWERED);
+
+    SmartDashboard.putData("Arm State", armStateChooser);
+    
+    super.initSendable(builder);
   }
 }

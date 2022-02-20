@@ -42,12 +42,15 @@ public class RobotContainer {
   private static Joystick rightJoystick;
   private static Joystick mechanismJoystick;
   private static Joystick gamepadController;
+  
 
   private static SendableChooser<Command> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
+
+    configureButtonBindings();
     m_driveTrain.setDefaultCommand(m_handleDriveTrain);
     m_intake.setDefaultCommand(m_handleIntake);
     m_uptake.setDefaultCommand(m_handleShooter);
@@ -58,8 +61,6 @@ public class RobotContainer {
     autoChooser.setDefaultOption("None", null);
     autoChooser.addOption("Shoot Low", new ShootLowBackAwayAuto(m_shooter, m_uptake));
     autoChooser.addOption("Shoot High", new ShootHighBackAwayAuto());
-
-    configureButtonBindings();
 
     SmartDashboard.putData("Autonomous", autoChooser);
   }
@@ -75,9 +76,10 @@ public class RobotContainer {
     rightJoystick = new Joystick(Constants.joy2);*/
     mechanismJoystick = new Joystick(Constants.buttonBox);
     gamepadController = new Joystick(Constants.gamepadJoy);
-    /*
-    JoystickButton shootLowButton = new JoystickButton(gamepadController, 2);
-    JoystickButton shootHighButton = new JoystickButton(gamepadController, 3);
+
+
+    JoystickButton shootLowButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.shooterLowButton);
+    JoystickButton shootHighButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.shooterHighButton);
 
     shootLowButton.whenHeld(new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.LOW));
     shootHighButton.whenHeld(m_shootHigh);*/
@@ -102,13 +104,13 @@ public class RobotContainer {
     return gamepadController;
   }
 
-  // public static boolean getLowerIntakeButton() {
-  //   return -mechanismJoystick.getRawAxis(Constants.gamepadConstants.moveIntakeAxis) < 0;
-  // }
+ public static boolean getLowerIntakeButton() {
+   return -mechanismJoystick.getRawAxis(Constants.gamepadConstants.moveIntakeAxis) < -.5;
+ }
 
-  // public static boolean getRaiseIntakeButton() {
-  //   return -mechanismJoystick.getRawAxis(Constants.gamepadConstants.moveIntakeAxis) > 0;
-  // }
+ public static boolean getRaiseIntakeButton() {
+   return -mechanismJoystick.getRawAxis(Constants.gamepadConstants.moveIntakeAxis) > .5;
+ }
 
   public static boolean getRunIntakeButton() {
     return mechanismJoystick.getRawButton(Constants.gamepadConstants.runIntakeButton);
@@ -141,7 +143,6 @@ public class RobotContainer {
   public static double getDriveTrainTurn(){
     return Utilities.applyDeadband(gamepadController.getRawAxis(Constants.gamepadConstants.kGamepadAxisRightStickX), 0.03);
   }
-  
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

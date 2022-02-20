@@ -35,6 +35,7 @@ public class HandleIntake extends CommandBase {
     m_intake.stopIntakeMotor();
     m_uptake.stopLoader();
     m_uptake.stopUptake();
+    m_intake.setArmState(m_intake.getSelectedArmState());
     sensorState = m_intake.getMagnetDigitalInput();
   }
 
@@ -52,20 +53,20 @@ public class HandleIntake extends CommandBase {
       m_intake.stopIntakeMotor();
       m_uptake.stopUptake();
     }
-/*
+    /*
     if(RobotContainer.getLowerIntakeButton()){
       m_intake.lowerIntakeArm();
     } else if(RobotContainer.getRaiseIntakeButton()){
       m_intake.raiseIntakeArm();
     } else {
       m_intake.stopIntakeArm();
-    }
-*/
-    // if(sensorState && m_intake.getCurrentArmState() == armStates.RAISED && RobotContainer.getLowerIntakeButton()){
-    //   m_intake.setArmState(armStates.LOWERING);
-    // } else if(sensorState && m_intake.getCurrentArmState() == armStates.LOWERED && RobotContainer.getRaiseIntakeButton()){
-    //   m_intake.setArmState(armStates.RAISING);
-    // }
+    }*/
+
+     if(sensorState && m_intake.getCurrentArmState() == armStates.RAISED && RobotContainer.getLowerIntakeButton()){
+       m_intake.setArmState(armStates.LOWERING);
+     } else if(sensorState && m_intake.getCurrentArmState() == armStates.LOWERED && RobotContainer.getRaiseIntakeButton()){
+       m_intake.setArmState(armStates.RAISING);
+     }
 
     if(m_intake.getCurrentArmState() == armStates.RAISING){
       if(sensorState && !m_intake.getMagnetDigitalInput()){
@@ -76,9 +77,7 @@ public class HandleIntake extends CommandBase {
       } else {
         m_intake.raiseIntakeArm();
       }
-    }
-
-    if(m_intake.getCurrentArmState() == armStates.LOWERING){
+    }else if(m_intake.getCurrentArmState() == armStates.LOWERING){
       if(sensorState && !m_intake.getMagnetDigitalInput()){
         sensorState = false;
       } else if(!sensorState && m_intake.getMagnetDigitalInput()){
@@ -87,6 +86,8 @@ public class HandleIntake extends CommandBase {
       } else {
         m_intake.lowerIntakeArm();
       }
+    } else {
+      m_intake.stopIntakeArm();
     }
 
   }

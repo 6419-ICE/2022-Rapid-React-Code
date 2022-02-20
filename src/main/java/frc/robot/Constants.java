@@ -45,7 +45,7 @@ public final class Constants {
             H_EFFECT_PORT = 0;
 
         public static final double
-            armSpdLmt = .4,
+            armSpdLmt = .3,
             motorSpdLmt = .7;
     }
 
@@ -65,7 +65,7 @@ public final class Constants {
     public static class ShooterConstants {
         public static final int SHOOTER_MOTOR_PIN = 9;
 
-        public static final double SHOOTER_HIGH_FIRING_SPEED = 13000.0;
+        public static final double SHOOTER_HIGH_FIRING_SPEED = 13500.0;
         public static final double SHOOTER_LOW_FIRING_SPEED = 7000.0;
 
         public static final int kPIDLoopIdx = 0;
@@ -108,6 +108,7 @@ public final class Constants {
         public static final int shooterHighButton = 10;
         public static final int kGamepadButtonMode = -1;
         public static final int kGamepadButtonLogitech = -1;
+        public static final int moveIntakeAxis = 1;
 
         // Gamepad 2 axis 
         //public static final int moveIntakeAxis = 1;
