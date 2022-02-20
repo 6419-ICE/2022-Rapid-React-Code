@@ -9,13 +9,14 @@ import java.sql.Driver;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Intake.armStates;
 import frc.robot.subsystems.Shooter.shooterStates;
 import frc.robot.commands.*;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.ProxyScheduleCommand;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
@@ -27,34 +28,40 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public static final DriveTrain m_driveTrain = new DriveTrain();
-  private final Intake m_intake = new Intake();
-  private final Uptake m_uptake = new Uptake();
-  private final Shooter m_shooter = new Shooter();
+  public static final Intake m_intake = new Intake();
+  public static final Uptake m_uptake = new Uptake();
+  public static final Shooter m_shooter = new Shooter();
 
   private final HandleDriveTrain m_handleDriveTrain = new HandleDriveTrain(m_driveTrain);
   private final HandleIntake m_handleIntake = new HandleIntake(m_intake, m_uptake);
-  private final HandleShooter m_handleShooter = new HandleShooter(m_shooter);
+  private final HandleUptakeShooter m_handleShooter = new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.LOW);
   private final HandleUptakeShooter m_shootLow = new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.LOW);
   private final HandleUptakeShooter m_shootHigh = new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.HIGH);
- // private final ConditionalCommand cCommand = new ConditionalCommand(m_shootLow, m_shooter, RobotContainer.getShooterLowButton());
 
   private static Joystick leftJoystick;
   private static Joystick rightJoystick;
   private static Joystick mechanismJoystick;
   private static Joystick gamepadController;
 
+  private static SendableChooser<Command> autoChooser;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
-    configureButtonBindings();
-
     m_driveTrain.setDefaultCommand(m_handleDriveTrain);
     m_intake.setDefaultCommand(m_handleIntake);
-    m_uptake.setDefaultCommand(m_handleIntake);
-    //m_shooter.setDefaultCommand();
+    m_uptake.setDefaultCommand(m_handleShooter);
+    m_shooter.setDefaultCommand(m_handleShooter);
 
+    // Configure Autonomous Selections
+    autoChooser = new SendableChooser<>();
+    autoChooser.setDefaultOption("None", null);
+    autoChooser.addOption("Shoot Low", new ShootLowBackAwayAuto(m_shooter, m_uptake));
+    autoChooser.addOption("Shoot High", new ShootHighBackAwayAuto());
 
+    configureButtonBindings();
 
+    SmartDashboard.putData("Autonomous", autoChooser);
   }
 
   /**
@@ -68,12 +75,12 @@ public class RobotContainer {
     rightJoystick = new Joystick(Constants.joy2);*/
     mechanismJoystick = new Joystick(Constants.buttonBox);
     gamepadController = new Joystick(Constants.gamepadJoy);
-
+    /*
     JoystickButton shootLowButton = new JoystickButton(gamepadController, 2);
     JoystickButton shootHighButton = new JoystickButton(gamepadController, 3);
 
-    shootLowButton.whenHeld(new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.LOW), false);
-    shootHighButton.whenHeld(new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.HIGH), false);
+    shootLowButton.whenHeld(new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.LOW));
+    shootHighButton.whenHeld(m_shootHigh);*/
 
   }
   
@@ -142,6 +149,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_handleDriveTrain;
+    return autoChooser.getSelected();
   }
 }

@@ -53,7 +53,7 @@ public class DriveTrain extends SubsystemBase {
 
   public void drive(double l, double r){
     m_leftControllerGroup.set(l * Constants.DrivetrainConstants.speedLmt);
-    m_rightControllerGroup.set(-r * Constants.DrivetrainConstants.speedLmt);
+    m_rightControllerGroup.set(r * Constants.DrivetrainConstants.speedLmt);
   }
 
   public void arcadeDrive(double fwd, double rot) {

@@ -36,7 +36,7 @@ public class DriveByEncoder extends CommandBase {
     System.out.println("DriveByEncoder Initialized.");
 
     m_driveTrain.resetEncoders();
-    m_driveTrain.setMaxMotorSpeed(speedLimit);
+    m_driveTrain.setMaxMotorSpeed(.3);
     m_driveTrain.stop(); // Don't move on init
     //drivetrain.setSetpoints(distance, distance);
 }
@@ -45,11 +45,13 @@ public class DriveByEncoder extends CommandBase {
   @Override
   public void execute() {
     // Drive to set number of inches
-    if(Math.abs(distance) == distance){
+    if(distance < 0){
       m_driveTrain.drive(0.5, 0.5);
     } else{
       m_driveTrain.drive(-0.5, -0.5);
     }
+    SmartDashboard.putNumber("Left Encoder Distance", m_driveTrain.getLeftDriveEncoderDistance());
+    SmartDashboard.putNumber("Right Encoder Distance", m_driveTrain.getRightDriveEncoderDistance());
   }
 
   // Called once the command ends or is interrupted.
