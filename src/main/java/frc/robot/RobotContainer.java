@@ -81,8 +81,8 @@ public class RobotContainer {
     JoystickButton shootLowButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.shooterLowButton);
     JoystickButton shootHighButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.shooterHighButton);
 
-    shootLowButton.whenHeld(new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.LOW));
-    shootHighButton.whenHeld(m_shootHigh);*/
+    shootLowButton.whenHeld(new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.LOW), false);
+    shootHighButton.whenHeld(new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.HIGH), false);
 
   }
   
