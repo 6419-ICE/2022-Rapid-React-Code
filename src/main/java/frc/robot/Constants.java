@@ -20,8 +20,13 @@ public final class Constants {
         public static final double speedLmt = .4;
 
         //Drive train encoder values
-        public static final double gearboxRatio = 1;
-        public static final double inchesPerRotation = 1;
+        public static final double gearboxRatio = 1/10.71; // Input divided by output
+        public static final double ticksPerRotation = 2048 * gearboxRatio * 4; // Motor CPR times gearbox ratio
+        public static final double wheelDiameter = 6;
+        public static final double circumference = wheelDiameter * Math.PI;
+        public static final double rotationsPerInch = 1 / (circumference);
+        public static final double distanceCorrector = 1.6;
+        public static final double ticksPerInch = ticksPerRotation * rotationsPerInch * distanceCorrector;
 
         //Motor ports
         public static final int 

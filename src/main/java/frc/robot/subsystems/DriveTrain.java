@@ -53,12 +53,56 @@ public class DriveTrain extends SubsystemBase {
 
   public void drive(double l, double r){
     m_leftControllerGroup.set(l * Constants.DrivetrainConstants.speedLmt);
-    m_rightControllerGroup.set(-r * Constants.DrivetrainConstants.speedLmt);
+    m_rightControllerGroup.set(r * Constants.DrivetrainConstants.speedLmt);
   }
 
   public void arcadeDrive(double fwd, double rot) {
     m_drive.arcadeDrive(fwd * Constants.DrivetrainConstants.speedLmt, rot * Constants.DrivetrainConstants.speedLmt);
-}
+  }
+  
+  public TalonFX getRightMotors(){
+    return m_rightMotors[0];
+  }
+
+  public TalonFX getLeftMotors(){
+    return m_leftMotors[0];
+  }
+
+  public void setMaxMotorSpeed(double speed) {
+    m_leftMotors[0].configPeakOutputForward(speed);
+    m_leftMotors[0].configPeakOutputReverse(-speed);
+    m_rightMotors[0].configPeakOutputForward(speed);
+    m_rightMotors[0].configPeakOutputReverse(-speed);
+    m_leftMotors[1].configPeakOutputForward(speed);
+    m_leftMotors[1].configPeakOutputReverse(-speed);
+    m_rightMotors[1].configPeakOutputForward(speed);
+    m_rightMotors[1].configPeakOutputReverse(-speed);
+  }
+
+  public void stop() {
+    m_leftControllerGroup.set(0.0);
+    m_rightControllerGroup.set(0.0);
+  }
+
+  public double getLeftDriveEncoderDistance() {
+    return m_leftEncoder.getIntegratedSensorPosition() / Constants.DrivetrainConstants.ticksPerInch;
+  }
+  public double getRightDriveEncoderDistance() {
+    return m_rightEncoder.getIntegratedSensorPosition() / Constants.DrivetrainConstants.ticksPerInch;
+  }
+
+  public double getAverageEncoderDistance() {
+    return (getLeftDriveEncoderDistance() + getLeftDriveEncoderDistance()) / 2.0;
+  }
+
+  public double getDriveEncoderRate() {
+    return ((m_leftEncoder.getIntegratedSensorVelocity() + m_rightEncoder.getIntegratedSensorVelocity()) / 2) / Constants.DrivetrainConstants.ticksPerInch * 10;
+  }
+
+  public void resetEncoders(){
+    m_rightEncoder.setIntegratedSensorPosition(0, 30);
+    m_leftEncoder.setIntegratedSensorPosition(0, 30);
+  }
 
   @Override
   public void periodic() {
