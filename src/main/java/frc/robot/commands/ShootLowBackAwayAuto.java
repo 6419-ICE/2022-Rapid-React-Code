@@ -7,23 +7,26 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Uptake;
+import frc.robot.subsystems.Shooter.shooterStates;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ShootLowBackAwayAuto extends SequentialCommandGroup {
   /** Creates a new ShootLowBackAway. */
-  public ShootLowBackAwayAuto(Shooter shooter, Uptake uptake) {
+  public ShootLowBackAwayAuto(Shooter shooter, Uptake uptake, DriveTrain driveTrain, Intake intake) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       // Shoot into the low goal
-      new AutonomousShoot(uptake, shooter, Shooter.shooterStates.LOW, 10000),
+      new AutonomousShoot(uptake, shooter, shooterStates.LOW, 10000),
 
       // Back out of the line
-      new DriveByEncoder(-72)
+      new DriveByEncoder(driveTrain, -72)
     );
   }
 }

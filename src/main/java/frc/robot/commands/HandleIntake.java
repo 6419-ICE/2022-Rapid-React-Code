@@ -17,15 +17,13 @@ import frc.robot.subsystems.Intake.armStates;
 public class HandleIntake extends CommandBase {
 
   private final Intake m_intake;
-  private final Uptake m_uptake;
 
   private boolean sensorState;
 
   /** Creates a new HandleIntake. */
-  public HandleIntake(Intake intake, Uptake uptake) {
+  public HandleIntake(Intake intake) {
     m_intake = intake;
-    m_uptake = uptake;
-    addRequirements(m_intake, m_uptake);
+    addRequirements(m_intake);
   }
 
   // Called when the command is initially scheduled.
@@ -33,8 +31,6 @@ public class HandleIntake extends CommandBase {
   public void initialize() {
     m_intake.stopIntakeArm();
     m_intake.stopIntakeMotor();
-    m_uptake.stopLoader();
-    m_uptake.stopUptake();
     m_intake.setArmState(m_intake.getSelectedArmState());
     sensorState = m_intake.getMagnetDigitalInput();
   }
@@ -46,12 +42,8 @@ public class HandleIntake extends CommandBase {
       m_intake.reverseIntakeMotor();
     }else if(RobotContainer.getRunIntakeButton()){
       m_intake.runIntakeMotor();
-      if(!m_uptake.isCargoPresent()){
-        m_uptake.runUptake();
-      }
     } else {
       m_intake.stopIntakeMotor();
-      m_uptake.stopUptake();
     }
     /*
     if(RobotContainer.getLowerIntakeButton()){
@@ -94,7 +86,11 @@ public class HandleIntake extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_intake.stopIntakeArm();
+    m_intake.stopIntakeMotor();
+
+  }
 
   // Returns true when the command should end.
   @Override
@@ -104,10 +100,5 @@ public class HandleIntake extends CommandBase {
 
   private String returnArmState(){
     return m_intake.getCurrentArmState().toString();
-  }
-
-  @Override
-  public void initSendable(SendableBuilder builder) {
-    builder.addStringProperty("Arm State", this::returnArmState, null);
   }
 }

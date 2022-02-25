@@ -5,7 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.EventImportance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
@@ -66,7 +70,12 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    CommandScheduler.getInstance().onCommandInitialize((command) -> SmartDashboard.putString(
+      "Command Init", command.getName()));
+    CommandScheduler.getInstance().onCommandInterrupt((command) -> SmartDashboard.putString(
+      "Command Int", command.getName()));
+  }
 
   @Override
   public void teleopInit() {

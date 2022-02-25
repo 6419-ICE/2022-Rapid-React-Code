@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import org.opencv.features2d.KAZE;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -29,6 +30,7 @@ public class HandleDriveTrain extends CommandBase {
   @Override
   public void initialize() {
     m_driveTrain.drive(0, 0);
+    m_driveTrain.resetEncoders();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -39,6 +41,8 @@ public class HandleDriveTrain extends CommandBase {
     power = Math.copySign(Math.abs(Math.pow(power, 2)), power);
     turn = Math.copySign(Math.abs(Math.pow(turn, 2)), turn);
     m_driveTrain.arcadeDrive(power, turn);
+    SmartDashboard.putNumber("Left Encoder Distance", m_driveTrain.getLeftDriveEncoderDistance());
+    SmartDashboard.putNumber("Right Encoder Distance", m_driveTrain.getRightDriveEncoderDistance());
   }
 
   // Called once the command ends or is interrupted.

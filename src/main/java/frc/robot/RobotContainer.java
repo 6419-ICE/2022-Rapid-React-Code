@@ -27,19 +27,18 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public static final DriveTrain m_driveTrain = new DriveTrain();
-  public static final Intake m_intake = new Intake();
-  public static final Uptake m_uptake = new Uptake();
-  public static final Shooter m_shooter = new Shooter();
+  private static final DriveTrain m_driveTrain = new DriveTrain();
+  private static final Intake m_intake = new Intake();
+  private static final Uptake m_uptake = new Uptake();
+  private static final Shooter m_shooter = new Shooter();
+  private static final Hanger m_hanger = new Hanger();
 
   private final HandleDriveTrain m_handleDriveTrain = new HandleDriveTrain(m_driveTrain);
-  private final HandleIntake m_handleIntake = new HandleIntake(m_intake, m_uptake);
-  private final HandleUptakeShooter m_handleShooter = new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.LOW);
-  private final HandleUptakeShooter m_shootLow = new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.LOW);
-  private final HandleUptakeShooter m_shootHigh = new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.HIGH);
+  private final HandleIntake m_handleIntake = new HandleIntake(m_intake);
+  private final HandleUptake m_handleUptake = new HandleUptake(m_uptake);
+  private final HandleShooter m_handleShooter = new HandleShooter(m_shooter);
+  private final HandleHanger m_handleHanger = new HandleHanger(m_hanger);
 
-  private static Joystick leftJoystick;
-  private static Joystick rightJoystick;
   private static Joystick mechanismJoystick;
   private static Joystick gamepadController;
   
@@ -53,14 +52,16 @@ public class RobotContainer {
     configureButtonBindings();
     m_driveTrain.setDefaultCommand(m_handleDriveTrain);
     m_intake.setDefaultCommand(m_handleIntake);
-    m_uptake.setDefaultCommand(m_handleShooter);
+    m_uptake.setDefaultCommand(m_handleUptake);
     m_shooter.setDefaultCommand(m_handleShooter);
+    m_hanger.setDefaultCommand(m_handleHanger);
 
     // Configure Autonomous Selections
     autoChooser = new SendableChooser<>();
     autoChooser.setDefaultOption("None", null);
-    autoChooser.addOption("Shoot Low", new ShootLowBackAwayAuto(m_shooter, m_uptake));
-    autoChooser.addOption("Shoot High", new ShootHighBackAwayAuto());
+    autoChooser.addOption("Shoot Low", new ShootLowBackAwayAuto(m_shooter, m_uptake, m_driveTrain, m_intake));
+    autoChooser.addOption("Shoot High", new ShootHighBackAwayAuto(m_shooter, m_uptake, m_driveTrain));
+    autoChooser.addOption("Only Shoot", new AutonomousShoot(m_uptake, m_shooter, shooterStates.LOW, 10000));
 
     SmartDashboard.putData("Autonomous", autoChooser);
   }
@@ -81,8 +82,8 @@ public class RobotContainer {
     JoystickButton shootLowButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.shooterLowButton);
     JoystickButton shootHighButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.shooterHighButton);
 
-    shootLowButton.whenHeld(new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.LOW), false);
-    shootHighButton.whenHeld(new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.HIGH), false);
+    shootLowButton.whenHeld(new TurretShoot(m_uptake, m_shooter, shooterStates.LOW), false);
+    shootHighButton.whenHeld(new TurretShoot(m_uptake, m_shooter, shooterStates.HIGH), false);
 
   }
   
@@ -104,13 +105,21 @@ public class RobotContainer {
     return gamepadController;
   }
 
- public static boolean getLowerIntakeButton() {
-   return -mechanismJoystick.getRawAxis(Constants.gamepadConstants.moveIntakeAxis) < -.5;
- }
-
- public static boolean getRaiseIntakeButton() {
-   return -mechanismJoystick.getRawAxis(Constants.gamepadConstants.moveIntakeAxis) > .5;
- }
+  public static boolean getLowerIntakeButton() {
+    return -mechanismJoystick.getRawAxis(Constants.gamepadConstants.moveIntakeAxis) < -.5;
+  }
+ 
+  public static boolean getRaiseIntakeButton() {
+    return -mechanismJoystick.getRawAxis(Constants.gamepadConstants.moveIntakeAxis) > .5;
+  } 
+  
+  public static boolean getLowerHangerButton() {
+    return -mechanismJoystick.getRawAxis(Constants.gamepadConstants.moveHangerAxis) < -.5;
+  }
+ 
+  public static boolean getRaiseHangerButton() {
+    return -mechanismJoystick.getRawAxis(Constants.gamepadConstants.moveHangerAxis) > .5;
+  }
 
   public static boolean getRunIntakeButton() {
     return mechanismJoystick.getRawButton(Constants.gamepadConstants.runIntakeButton);
@@ -150,6 +159,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return autoChooser.getSelected();
+    return  autoChooser.getSelected();
   }
 }

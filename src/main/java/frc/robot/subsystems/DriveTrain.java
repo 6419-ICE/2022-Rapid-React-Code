@@ -42,22 +42,22 @@ public class DriveTrain extends SubsystemBase {
     m_leftMotors[0].configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 30);
     m_rightMotors[0].configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 30);
 
+    m_leftControllerGroup.setInverted(false);
+    m_rightControllerGroup.setInverted(true);
     // Sets the encoders
     m_leftEncoder = m_leftMotors[0].getSensorCollection();
     m_rightEncoder = m_rightMotors[0].getSensorCollection();
 
-    m_leftControllerGroup.setInverted(false);
-    m_rightControllerGroup.setInverted(true);
-
+    setMaxMotorSpeed(Constants.DrivetrainConstants.speedLmt);
   }
 
   public void drive(double l, double r){
-    m_leftControllerGroup.set(l * Constants.DrivetrainConstants.speedLmt);
-    m_rightControllerGroup.set(r * Constants.DrivetrainConstants.speedLmt);
+    m_leftControllerGroup.set(l);
+    m_rightControllerGroup.set(r);
   }
 
   public void arcadeDrive(double fwd, double rot) {
-    m_drive.arcadeDrive(fwd * Constants.DrivetrainConstants.speedLmt, rot * Constants.DrivetrainConstants.speedLmt);
+    m_drive.arcadeDrive(fwd, rot);
   }
   
   public TalonFX getRightMotors(){
@@ -84,11 +84,18 @@ public class DriveTrain extends SubsystemBase {
     m_rightControllerGroup.set(0.0);
   }
 
+  public double getLeftDriveEncoderTick() {
+    return m_leftEncoder.getIntegratedSensorPosition();
+  }
+  public double getRightDriveEncoderTick() {
+    return -m_rightEncoder.getIntegratedSensorPosition();
+  }
+
   public double getLeftDriveEncoderDistance() {
-    return m_leftEncoder.getIntegratedSensorPosition() / Constants.DrivetrainConstants.ticksPerInch;
+    return getLeftDriveEncoderTick()/ Constants.DrivetrainConstants.ticksPerInch;
   }
   public double getRightDriveEncoderDistance() {
-    return m_rightEncoder.getIntegratedSensorPosition() / Constants.DrivetrainConstants.ticksPerInch;
+    return getRightDriveEncoderTick()/ Constants.DrivetrainConstants.ticksPerInch;
   }
 
   public double getAverageEncoderDistance() {

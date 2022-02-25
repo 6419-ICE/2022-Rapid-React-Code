@@ -4,43 +4,47 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.*;
-import frc.robot.subsystems.Shooter.shooterStates;
+import frc.robot.subsystems.Hanger;
 
-public class NewCommand extends CommandBase {
-  /** Creates a new TurretShoot. */
-  private double time;
-  public NewCommand(Shooter shooter, Intake intake, Uptake uptake) {
-    addRequirements(shooter, intake, uptake);
+public class HandleHanger extends CommandBase {
+  /** Creates a new HandleHanger. */
+
+  private final Hanger m_hanger;
+
+  public HandleHanger(Hanger hanger) {
+
+    m_hanger = hanger;
+
+    addRequirements(m_hanger);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    time = Timer.getFPGATimestamp();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putString("Message", "running");
+    if(RobotContainer.getRaiseHangerButton()){  
+      m_hanger.raiseHanger();
+    }else if(RobotContainer.getLowerHangerButton()){
+      m_hanger.lowerHanger();
+    }else {
+      m_hanger.stopHanger();
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    SmartDashboard.putString("Message", "end");
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Timer.getFPGATimestamp()-time >= 1.5;
+    return false;
   }
 }
