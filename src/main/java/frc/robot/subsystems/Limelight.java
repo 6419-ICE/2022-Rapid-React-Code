@@ -119,6 +119,10 @@ public class Limelight extends SubsystemBase {
       return ta.getNumber(0).doubleValue();
   }
 
+  public boolean onTarget() {
+    return canSeeTarget() && Math.abs(getHorizontalAngle()) < 28;
+  }
+
   /** Set the light mode of the camera using the enum
    * @param mode
    */

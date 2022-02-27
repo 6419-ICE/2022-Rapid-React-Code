@@ -77,12 +77,12 @@ public class AutonomousShoot extends CommandBase {
         m_uptake.setUptakePower(.6);
       }
     }
-    if(secondBall){
-      //isDone = true;
-    }
-    while(!m_uptake.isCargoPresent()){
-      m_uptake.runUptake();
-    }
+    // if(secondBall){
+    //   isDone = true;
+    // }
+    // while(!m_uptake.isCargoPresent()){
+    //   m_uptake.runUptake();
+    // }
     secondBall = true;
   }
 
@@ -102,6 +102,5 @@ public class AutonomousShoot extends CommandBase {
   @Override
   public boolean isFinished() {
     return secondBall;
-    
   }
 }
