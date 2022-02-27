@@ -76,12 +76,12 @@ public class AutonomousShoot extends CommandBase {
         m_uptake.setUptakePower(.6);
       }
     }
-    if(secondBall){
-      isDone = true;
-    }
-    while(!m_uptake.isCargoPresent()){
-      m_uptake.runUptake();
-    }
+    // if(secondBall){
+    //   isDone = true;
+    // }
+    // while(!m_uptake.isCargoPresent()){
+    //   m_uptake.runUptake();
+    // }
     secondBall = true;
   }
 
@@ -97,6 +97,6 @@ public class AutonomousShoot extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return isDone;
+    return secondBall;
   }
 }

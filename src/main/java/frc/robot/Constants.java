@@ -98,7 +98,7 @@ public final class Constants {
         // Gamepad 2 buttons
         public static final int runIntakeButton = 1; // Bottom Button
         public static final int runUptakeButton = 2; // Right Button
-        public static final int button3 = 3; // Left Button
+        public static final int centerButton = 3; // Left Button
         public static final int button4 = 4; // Top Button
         public static final int button5 = 5;
         public static final int reverseIntakeButton = 6;

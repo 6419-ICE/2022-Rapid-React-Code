@@ -39,6 +39,7 @@ public class RobotContainer {
   private final HandleUptakeShooter m_shootLow = new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.LOW);
   private final HandleUptakeShooter m_shootHigh = new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.HIGH);
   private final HandleLimelight m_handleLimelight = new HandleLimelight(m_limelight);
+  private final CenterOnGoal m_centerOnGoal = new CenterOnGoal(m_driveTrain, m_limelight);
 
   private static Joystick leftJoystick;
   private static Joystick rightJoystick;
@@ -137,6 +138,10 @@ public class RobotContainer {
 
   public static boolean getShooterLowButton(){
     return mechanismJoystick.getRawButton(Constants.gamepadConstants.shooterLowButton);
+  }
+
+  public static boolean getCenterButton(){
+    return mechanismJoystick.getRawButton(Constants.gamepadConstants.centerButton);
   }
 
   public static double getDriveTrainForward(){

@@ -59,7 +59,6 @@ public class DriveByEncoder extends CommandBase {
   public void end(boolean interrupted) {
     System.out.println(String.format("Drive Complete: interrupted: %s", interrupted ? "yes" : "no"));
     m_driveTrain.stop();
-    m_driveTrain.resetEncoders();
   }
 
   // Returns true when the command should end.

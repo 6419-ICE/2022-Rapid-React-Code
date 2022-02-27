@@ -4,52 +4,52 @@
 
 package frc.robot.commands;
 
-import org.opencv.features2d.KAZE;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
-import frc.robot.Utilities;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Limelight;
 
-public class HandleDriveTrain extends CommandBase {
-  /** Creates a new HandleDrivetrain. */
+import static frc.robot.RobotContainer.m_driveTrain;
+import static frc.robot.RobotContainer.m_limelight;
+
+public class CenterOnGoal extends CommandBase {
+  /** Creates a new CenterOnGoal. */
 
   private final DriveTrain m_driveTrain;
+  private final Limelight m_limelight;
 
-  public HandleDriveTrain(DriveTrain driveTrain) {
+  public CenterOnGoal(DriveTrain driveTrain, Limelight limelight) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_driveTrain = driveTrain;
-    addRequirements(m_driveTrain);
-
+    m_limelight = limelight;
+    addRequirements(driveTrain, limelight);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_driveTrain.drive(0, 0);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double power = RobotContainer.getDriveTrainForward();
-    double turn = RobotContainer.getDriveTrainTurn();
-    power = Math.copySign(Math.abs(Math.pow(power, 2)), power);
-    turn = Math.copySign(Math.abs(Math.pow(turn, 2)), turn);
-    m_driveTrain.arcadeDrive(power, turn);
+    if(RobotContainer.getCenterButton()){
+      if(m_limelight.getHorizontalAngle() > 28){
+        m_driveTrain.arcadeDrive(0, 1);
+      } else if(m_limelight.getHorizontalAngle() < -28){
+        m_driveTrain.arcadeDrive(0, -1);
+      } else{
+        m_driveTrain.arcadeDrive(0, 0);
+      }
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_driveTrain.drive(0,0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(m_limelight.getHorizontalAngle()) < 28;
   }
 }
