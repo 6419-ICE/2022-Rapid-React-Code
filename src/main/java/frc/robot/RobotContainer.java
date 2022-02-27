@@ -31,12 +31,14 @@ public class RobotContainer {
   public static final Intake m_intake = new Intake();
   public static final Uptake m_uptake = new Uptake();
   public static final Shooter m_shooter = new Shooter();
+  public static final Limelight m_limelight = new Limelight();
 
   private final HandleDriveTrain m_handleDriveTrain = new HandleDriveTrain(m_driveTrain);
   private final HandleIntake m_handleIntake = new HandleIntake(m_intake, m_uptake);
   private final HandleUptakeShooter m_handleShooter = new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.LOW);
   private final HandleUptakeShooter m_shootLow = new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.LOW);
   private final HandleUptakeShooter m_shootHigh = new HandleUptakeShooter(m_uptake, m_shooter, shooterStates.HIGH);
+  private final HandleLimelight m_handleLimelight = new HandleLimelight(m_limelight);
 
   private static Joystick leftJoystick;
   private static Joystick rightJoystick;
@@ -55,6 +57,7 @@ public class RobotContainer {
     m_intake.setDefaultCommand(m_handleIntake);
     m_uptake.setDefaultCommand(m_handleShooter);
     m_shooter.setDefaultCommand(m_handleShooter);
+    m_limelight.setDefaultCommand(m_handleLimelight);
 
     // Configure Autonomous Selections
     autoChooser = new SendableChooser<>();

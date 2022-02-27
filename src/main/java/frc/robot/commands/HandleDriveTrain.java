@@ -34,8 +34,8 @@ public class HandleDriveTrain extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double power = RobotContainer.getDriveTrainForward();
-    double turn = RobotContainer.getDriveTrainTurn();
+    double power = RobotContainer.getDriveTrainForward() * Constants.DrivetrainConstants.speedLmt;
+    double turn = RobotContainer.getDriveTrainTurn() * Constants.DrivetrainConstants.speedLmt;
     power = Math.copySign(Math.abs(Math.pow(power, 2)), power);
     turn = Math.copySign(Math.abs(Math.pow(turn, 2)), turn);
     m_driveTrain.arcadeDrive(power, turn);
