@@ -16,8 +16,8 @@ import frc.robot.subsystems.Shooter.shooterStates;
 
 public class AutonomousShoot extends CommandBase {
   /** Creates a new AutonomousShoot. */
-  private final Uptake m_uptake;
   private final Shooter m_shooter;
+  private final Uptake m_uptake;
 
   private Integer m_maxMs;
 
@@ -26,13 +26,13 @@ public class AutonomousShoot extends CommandBase {
 
   private shooterStates m_shooterState;
 
-  public AutonomousShoot(Uptake uptake, Shooter shooter, shooterStates shooterState, Integer maxMs) {
+  public AutonomousShoot( Uptake uptake, Shooter shooter, shooterStates shooterState, Integer maxMs) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_uptake = uptake;
     m_shooter = shooter;
+    m_uptake = uptake;
     m_shooterState = shooterState;
     m_maxMs = maxMs;
-    addRequirements(m_uptake, m_shooter);
+    addRequirements(m_shooter);
   }
 
   // Called when the command is initially scheduled.
@@ -45,6 +45,7 @@ public class AutonomousShoot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    
     Integer timeOut = 0;
     if(m_shooterState == shooterStates.HIGH){
       m_shooter.spoolUpHigh();
@@ -77,7 +78,7 @@ public class AutonomousShoot extends CommandBase {
       }
     }
     if(secondBall){
-      isDone = true;
+      //isDone = true;
     }
     while(!m_uptake.isCargoPresent()){
       m_uptake.runUptake();
@@ -88,7 +89,10 @@ public class AutonomousShoot extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    Timer.delay(0.5);
+    if(interrupted){
+      SmartDashboard.putBoolean("Is Interrupted", interrupted);
+    }
+    //Timer.delay(0.5);
     m_uptake.stopLoader();
     m_uptake.stopUptake();
     m_shooter.spoolDown();
@@ -97,6 +101,7 @@ public class AutonomousShoot extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return isDone;
+    return secondBall;
+    
   }
 }

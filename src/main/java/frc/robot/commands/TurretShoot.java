@@ -11,15 +11,15 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Shooter.shooterStates;
 
-public class HandleUptakeShooter extends CommandBase {
-  /** Creates a new HandleUptakeShooter. */
+public class TurretShoot extends CommandBase {
+  /** Creates a new TurretShoot. */
   private final Uptake m_uptake;
   private final Shooter m_shooter;
   private double time;
 
   private shooterStates m_shooterState;
 
-  public HandleUptakeShooter(Uptake uptake, Shooter shooter, shooterStates shooterState) {
+  public TurretShoot(Uptake uptake, Shooter shooter, shooterStates shooterState) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_uptake = uptake;
     m_shooter = shooter;

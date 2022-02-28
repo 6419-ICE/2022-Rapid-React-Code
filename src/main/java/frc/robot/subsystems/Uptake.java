@@ -24,10 +24,13 @@ public class Uptake extends SubsystemBase {
   private final DigitalInput loadSensor = new DigitalInput(Constants.UptakeConstants.LOAD_SENSOR_PORT);
 
   public Uptake() {
-    loaderMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
     uptakeMotor.setNeutralMode(NeutralMode.Brake);
-    loaderMotor.setInverted(true);
     loaderMotor.setIdleMode(IdleMode.kBrake);
+
+    loaderMotor.setInverted(true);
+
+    uptakeMotor.configPeakOutputForward(Constants.UptakeConstants.uptakeMotorLmt);
+    uptakeMotor.configPeakOutputReverse(-Constants.UptakeConstants.uptakeMotorLmt);
   }
 
   @Override
@@ -52,15 +55,15 @@ public class Uptake extends SubsystemBase {
   }
 
   public void setUptakePower(double power) {
-    uptakeMotor.set(ControlMode.PercentOutput, power * Constants.UptakeConstants.uptakeMotorLmt);
+    uptakeMotor.set(ControlMode.PercentOutput, power);
   }
 
   public void runUptake(){
-    uptakeMotor.set(ControlMode.PercentOutput, 1 * Constants.UptakeConstants.uptakeMotorLmt);
+    uptakeMotor.set(ControlMode.PercentOutput, 1);
   }
 
   public void reverseUptake(){
-    uptakeMotor.set(ControlMode.PercentOutput, -1 * Constants.UptakeConstants.uptakeMotorLmt);
+    uptakeMotor.set(ControlMode.PercentOutput, -1);
   }
 
   public void stopUptake(){

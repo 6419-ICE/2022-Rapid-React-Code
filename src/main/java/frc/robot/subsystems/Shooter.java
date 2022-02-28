@@ -45,6 +45,7 @@ public class Shooter extends SubsystemBase {
 		m_shooterMotor.config_kP(Constants.ShooterConstants.kPIDLoopIdx, Constants.ShooterConstants.kP, Constants.ShooterConstants.kTimeoutMs);
 		m_shooterMotor.config_kI(Constants.ShooterConstants.kPIDLoopIdx, Constants.ShooterConstants.kI, Constants.ShooterConstants.kTimeoutMs);
 		m_shooterMotor.config_kD(Constants.ShooterConstants.kPIDLoopIdx, Constants.ShooterConstants.kD, Constants.ShooterConstants.kTimeoutMs);
+		m_shooterMotor.config_kF(Constants.ShooterConstants.kPIDLoopIdx, Constants.ShooterConstants.kF, Constants.ShooterConstants.kTimeoutMs);
 
     m_shooterEncoder = m_shooterMotor.getSensorCollection();
   }

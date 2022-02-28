@@ -21,12 +21,12 @@ public final class Constants {
 
         //Drive train encoder values
         public static final double gearboxRatio = 1/10.71; // Input divided by output
-        public static final double ticksPerRotation = 2048 * gearboxRatio * 4; // Motor CPR times gearbox ratio
+        public static final double ticksPerRotation = 2048 / gearboxRatio; // Motor CPR times gearbox ratio
         public static final double wheelDiameter = 6;
         public static final double circumference = wheelDiameter * Math.PI;
         public static final double rotationsPerInch = 1 / (circumference);
-        public static final double distanceCorrector = 1.6;
-        public static final double ticksPerInch = ticksPerRotation * rotationsPerInch * distanceCorrector;
+        //public static final double distanceCorrector = 1.6;
+        public static final double ticksPerInch = ticksPerRotation * rotationsPerInch;
 
         //Motor ports
         public static final int 
@@ -65,20 +65,24 @@ public final class Constants {
     public static class ShooterConstants {
         public static final int SHOOTER_MOTOR_PIN = 9;
 
-        public static final double SHOOTER_HIGH_FIRING_SPEED = 13500.0;
-        public static final double SHOOTER_LOW_FIRING_SPEED = 7000.0;
+        public static final double SHOOTER_HIGH_FIRING_SPEED = 12000.0;
+        public static final double SHOOTER_LOW_FIRING_SPEED = 6000.0;
 
         public static final int kPIDLoopIdx = 0;
         public static final int kTimeoutMs = 30;
 
-        public static final double kP = 0.235;
+        public static final double kP = 0.3;
         public static final double kI = 0;
-        public static final double kD = 0.15;
+        public static final double kD = 0;
+        public static final double kF = 0.047;
 
     }
 
     public static class HangerConstants {
+        public static final int BACK_CLIMBER_ONE_PIN = 10;
+        public static final int BACK_CLIMBER_TWO_PIN = 11;
 
+        public static final double hangerSpeedLmt = .8;
     }
 
     public static final int joy1 = 0, buttonBox = 1, joy3 = 2;
@@ -108,7 +112,8 @@ public final class Constants {
         public static final int shooterHighButton = 10;
         public static final int kGamepadButtonMode = -1;
         public static final int kGamepadButtonLogitech = -1;
-        public static final int moveIntakeAxis = 1;
+        public static final int moveIntakeAxis = 0;
+        public static final int moveHangerAxis = 1;
 
         // Gamepad 2 axis 
         //public static final int moveIntakeAxis = 1;
