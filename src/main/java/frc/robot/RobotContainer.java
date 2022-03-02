@@ -41,6 +41,8 @@ public class RobotContainer {
   private final HandleHanger m_handleHanger = new HandleHanger(m_hanger);
   private final HandleLimelight m_handleLimelight = new HandleLimelight(m_limelight);
   private final CenterOnGoal m_centerOnGoal = new CenterOnGoal(m_driveTrain, m_limelight);
+  private final DriveByEncoder m_driveByEncoder = new DriveByEncoder(m_driveTrain, 36);
+  private final PIDTurn m_PIDTurn = new PIDTurn(m_driveTrain, 180);
 
   private static Joystick mechanismJoystick;
   private static Joystick gamepadController;
@@ -65,6 +67,8 @@ public class RobotContainer {
     autoChooser.setDefaultOption("None", null);
     autoChooser.addOption("Shoot Low", new ShootLowBackAwayAuto(m_shooter, m_uptake, m_driveTrain, m_intake));
     autoChooser.addOption("Shoot High", new ShootHighBackAwayAuto(m_shooter, m_uptake, m_driveTrain));
+    autoChooser.addOption("Drive By Encoder", m_driveByEncoder);
+    autoChooser.addOption("PID Turn", m_PIDTurn);
     autoChooser.addOption("Only Shoot", new AutonomousShoot(m_uptake, m_shooter, shooterStates.LOW, 10000));
 
     SmartDashboard.putData("Autonomous", autoChooser);
@@ -85,9 +89,12 @@ public class RobotContainer {
 
     JoystickButton shootLowButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.shooterLowButton);
     JoystickButton shootHighButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.shooterHighButton);
+    JoystickButton centerOnGoalButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.centerButton);
 
     shootLowButton.whenHeld(new TurretShoot(m_uptake, m_shooter, shooterStates.LOW), false);
     shootHighButton.whenHeld(new TurretShoot(m_uptake, m_shooter, shooterStates.HIGH), false);
+    centerOnGoalButton.whenPressed(new CenterOnGoal(m_driveTrain, m_limelight), false);
+
 
   }
   

@@ -40,7 +40,7 @@ public class HandleDriveTrain extends CommandBase {
     double turn = RobotContainer.getDriveTrainTurn();
     power = Math.copySign(Math.abs(Math.pow(power, 2)), power);
     turn = Math.copySign(Math.abs(Math.pow(turn, 2)), turn);
-    m_driveTrain.arcadeDrive(power, turn);
+    m_driveTrain.arcadeDrive(power * Constants.DrivetrainConstants.speedLmt, turn * Constants.DrivetrainConstants.speedLmt);
     SmartDashboard.putNumber("Left Encoder Distance", m_driveTrain.getLeftDriveEncoderDistance());
     SmartDashboard.putNumber("Right Encoder Distance", m_driveTrain.getRightDriveEncoderDistance());
   }

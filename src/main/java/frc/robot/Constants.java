@@ -18,6 +18,7 @@ public final class Constants {
     public static class DrivetrainConstants{
         //Universal motor speed limit
         public static final double speedLmt = .4;
+        public static final double autoSpeedLmt = .15; 
 
         //Drive train encoder values
         public static final double gearboxRatio = 1/10.71; // Input divided by output
@@ -34,6 +35,23 @@ public final class Constants {
             LEFT_BACK_PIN = 2,
             RIGHT_FRONT_PIN = 3,
             RIGHT_BACK_PIN = 4;
+
+        public static class DrivePID {
+            public static final double kP = 0;
+            public static final double kI = 0;
+            public static final double kD = 0;
+            public static final double kF = 0;
+
+            public static final double drivePIDTolerance = 2;
+        }
+
+        public static class HeadingPID {
+            public static final double kP = 0.04;
+            public static final double kI = 0;
+            public static final double kD = 0.005;
+
+            public static final double headingPIDTolerance = 1;
+        }
     }
 
     public static class IntakeConstants{

@@ -6,40 +6,38 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Limelight;
 
-
-public class CenterOnGoal extends CommandBase {
-  /** Creates a new CenterOnGoal. */
+public class PIDTurn extends CommandBase {
 
   private final DriveTrain m_driveTrain;
-  private final Limelight m_limelight;
 
-  public CenterOnGoal(DriveTrain driveTrain, Limelight limelight) {
-    // Use addRequirements() here to declare subsystem dependencies.
+  private double initAngle;
+  private double angle;
+  private double desiredAngle;
+
+  /** Creates a new PIDTurn. */
+  public PIDTurn(DriveTrain driveTrain, double angle) {
     m_driveTrain = driveTrain;
-    m_limelight = limelight;
-    addRequirements(driveTrain, limelight);
+    this.angle = angle;
+    addRequirements(m_driveTrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    m_driveTrain.resetHeading();
+    initAngle = m_driveTrain.getAngle();
+    desiredAngle = initAngle + angle;
+    m_driveTrain.setMaxMotorSpeed(Constants.DrivetrainConstants.speedLmt);
+    m_driveTrain.setHeadingTarget(desiredAngle);
+    m_driveTrain.stop();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      if(m_limelight.getHorizontalAngle() > 5){
-        m_driveTrain.arcadeDrive(0, 1 * Constants.DrivetrainConstants.speedLmt);
-      } else if(m_limelight.getHorizontalAngle() < -5){
-        m_driveTrain.arcadeDrive(0, -1 * Constants.DrivetrainConstants.speedLmt);
-      } else{
-        m_driveTrain.arcadeDrive(0, 0);
-      }
+    m_driveTrain.drive(-m_driveTrain.headingOutput(m_driveTrain.getAngle()), m_driveTrain.headingOutput(m_driveTrain.getAngle()), Constants.DrivetrainConstants.autoSpeedLmt);
   }
 
   // Called once the command ends or is interrupted.
@@ -51,6 +49,6 @@ public class CenterOnGoal extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(m_limelight.getHorizontalAngle()) < 5;
+    return m_driveTrain.atHeadingTarget();
   }
 }
