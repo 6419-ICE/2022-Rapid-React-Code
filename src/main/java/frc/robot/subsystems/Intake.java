@@ -116,7 +116,9 @@ public class Intake extends SubsystemBase {
 
     armStateChooser = new SendableChooser<>();
     armStateChooser.setDefaultOption("Raised", armStates.RAISED);
-    armStateChooser.addObject("Lowered", armStates.LOWERED);
+    armStateChooser.addOption("Lowered", armStates.LOWERED);
+    armStateChooser.addOption("Raising", armStates.RAISING);
+    armStateChooser.addOption("Lowering", armStates.LOWERING);
 
     SmartDashboard.putData("Arm State", armStateChooser);
     

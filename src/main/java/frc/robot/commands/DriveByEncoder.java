@@ -28,32 +28,29 @@ public class DriveByEncoder extends CommandBase {
     public DriveByEncoder(DriveTrain drivetrain, double d) {
         m_driveTrain = drivetrain;
         addRequirements(m_driveTrain);        
-        this.speedLimit = Constants.DrivetrainConstants.speedLmt;
-        leftEncoder = m_driveTrain.getLeftMotors();
-        rightEncoder = m_driveTrain.getRightMotors();
-
         distance = d;
     }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    SmartDashboard.putNumber("distance", distance);
     m_driveTrain.resetEncoders();
-    m_driveTrain.setMaxMotorSpeed(.3);
     m_driveTrain.stop(); // Don't move on init
+    m_driveTrain.setMaxMotorSpeed(Constants.DrivetrainConstants.speedLmt);
+
+    m_driveTrain.resetHeading();
+    m_driveTrain.setHeadingTarget(0);
     //drivetrain.setSetpoints(distance, distance);
+    SmartDashboard.putNumber("distance", distance);
+
 }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     // Drive to set number of inches
-    if(distance < 0){
-      m_driveTrain.drive(0.5, 0.5);
-    } else{
-      m_driveTrain.drive(-0.5, -0.5);
-    }
+    m_driveTrain.drive(1 - m_driveTrain.headingOutput(m_driveTrain.getAngle(), 0), 1 + m_driveTrain.headingOutput(m_driveTrain.getAngle(), 0), Constants.DrivetrainConstants.autoSpeedLmt);
+
     SmartDashboard.putNumber("Left Encoder Distance", m_driveTrain.getLeftDriveEncoderDistance());
     SmartDashboard.putNumber("Right Encoder Distance", m_driveTrain.getRightDriveEncoderDistance());
   }
@@ -64,6 +61,7 @@ public class DriveByEncoder extends CommandBase {
     SmartDashboard.putBoolean("Is Interrupted", interrupted);
     //System.out.println(String.format("Drive Complete: interrupted: %s", interrupted ? "yes" : "no"));
     m_driveTrain.stop();
+    m_driveTrain.resetEncoders();
   }
 
   // Returns true when the command should end.
@@ -71,6 +69,7 @@ public class DriveByEncoder extends CommandBase {
   public boolean isFinished() {
     boolean isFinished = Math.abs(m_driveTrain.getRightDriveEncoderDistance()) >= Math.abs(distance)
     || Math.abs(m_driveTrain.getLeftDriveEncoderDistance()) >= Math.abs(distance);
+    //boolean isFinished = m_driveTrain.atDriveSetpoints();
     SmartDashboard.putBoolean("CommandIsFinished", isFinished);
     return isFinished;  
   

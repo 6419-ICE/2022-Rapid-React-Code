@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Intake.armStates;
 import frc.robot.subsystems.Shooter.shooterStates;
+import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -32,12 +33,18 @@ public class RobotContainer {
   private static final Uptake m_uptake = new Uptake();
   private static final Shooter m_shooter = new Shooter();
   private static final Hanger m_hanger = new Hanger();
+  public static final Limelight m_limelight = new Limelight();
 
   private final HandleDriveTrain m_handleDriveTrain = new HandleDriveTrain(m_driveTrain);
   private final HandleIntake m_handleIntake = new HandleIntake(m_intake);
   private final HandleUptake m_handleUptake = new HandleUptake(m_uptake);
   private final HandleShooter m_handleShooter = new HandleShooter(m_shooter);
   private final HandleHanger m_handleHanger = new HandleHanger(m_hanger);
+  private final HandleLimelight m_handleLimelight = new HandleLimelight(m_limelight);
+  private final CenterOnGoal m_centerOnGoal = new CenterOnGoal(m_driveTrain, m_limelight);
+  private final DriveByEncoder m_driveByEncoder = new DriveByEncoder(m_driveTrain, 36);
+  private final PIDTurn m_PIDTurn = new PIDTurn(m_driveTrain, 180);
+  private final TrajectoryAttempt m_trajectoryAttempt = new TrajectoryAttempt(m_driveTrain);
 
   private static Joystick mechanismJoystick;
   private static Joystick gamepadController;
@@ -55,13 +62,17 @@ public class RobotContainer {
     m_uptake.setDefaultCommand(m_handleUptake);
     m_shooter.setDefaultCommand(m_handleShooter);
     m_hanger.setDefaultCommand(m_handleHanger);
+    m_limelight.setDefaultCommand(m_handleLimelight);
 
     // Configure Autonomous Selections
     autoChooser = new SendableChooser<>();
     autoChooser.setDefaultOption("None", null);
     autoChooser.addOption("Shoot Low", new ShootLowBackAwayAuto(m_shooter, m_uptake, m_driveTrain, m_intake));
     autoChooser.addOption("Shoot High", new ShootHighBackAwayAuto(m_shooter, m_uptake, m_driveTrain));
+    autoChooser.addOption("Drive By Encoder", m_driveByEncoder);
+    autoChooser.addOption("PID Turn", m_PIDTurn);
     autoChooser.addOption("Only Shoot", new AutonomousShoot(m_uptake, m_shooter, shooterStates.LOW, 10000));
+    autoChooser.addOption("Trajectory Attempt", m_trajectoryAttempt);
 
     SmartDashboard.putData("Autonomous", autoChooser);
   }
@@ -81,9 +92,12 @@ public class RobotContainer {
 
     JoystickButton shootLowButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.shooterLowButton);
     JoystickButton shootHighButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.shooterHighButton);
+    JoystickButton centerOnGoalButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.centerButton);
 
     shootLowButton.whenHeld(new TurretShoot(m_uptake, m_shooter, shooterStates.LOW), false);
     shootHighButton.whenHeld(new TurretShoot(m_uptake, m_shooter, shooterStates.HIGH), false);
+    centerOnGoalButton.whenPressed(new CenterOnGoal(m_driveTrain, m_limelight), false);
+
 
   }
   
@@ -143,6 +157,10 @@ public class RobotContainer {
 
   public static boolean getShooterLowButton(){
     return mechanismJoystick.getRawButton(Constants.gamepadConstants.shooterLowButton);
+  }
+
+  public static boolean getCenterButton(){
+    return mechanismJoystick.getRawButton(Constants.gamepadConstants.centerButton);
   }
 
   public static double getDriveTrainForward(){
