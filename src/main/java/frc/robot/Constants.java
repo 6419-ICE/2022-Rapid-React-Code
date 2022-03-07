@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -17,7 +19,7 @@ public final class Constants {
     //Constants for the drive train
     public static class DrivetrainConstants{
         //Universal motor speed limit
-        public static final double speedLmt = .4;
+        public static final double speedLmt = .5;
         public static final double autoSpeedLmt = .15; 
 
         //Drive train encoder values
@@ -52,6 +54,32 @@ public final class Constants {
 
             public static final double headingPIDTolerance = 1;
         }
+
+
+    }
+    public static class TrajectoryConstants{
+        public static final double ksVolts = 0.70925;
+        public static final double kvVoltSecondsPerMeter = 2.2847;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.24799;
+
+        public static final double kpDrivePosition = 0.93512;
+        public static final double kdDrivePosition = 0.059761;
+
+        public static final double kpDriveVel = 2.9623;
+
+        public static final double kTrackWidthMeters = .5;
+
+        public static final double kMaxSpeedMetersPerSecond = 1.5;
+        public static final double kMaxAccelerationMetersPerSecond = .3;
+
+        public static final DifferentialDriveKinematics m_driveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
+
+        // Larger values of b make convergence more aggressive like a proportional term
+        // whereas larger values of zeta provide more damping in the response.
+        public static final double kRamseteB = 20;
+
+        public static final double kRamseteZeta = 0.02;
+
     }
 
     public static class IntakeConstants{
@@ -83,7 +111,7 @@ public final class Constants {
     public static class ShooterConstants {
         public static final int SHOOTER_MOTOR_PIN = 9;
 
-        public static final double SHOOTER_HIGH_FIRING_SPEED = 12000.0;
+        public static final double SHOOTER_HIGH_FIRING_SPEED = 11500.0;
         public static final double SHOOTER_LOW_FIRING_SPEED = 6000.0;
 
         public static final int kPIDLoopIdx = 0;

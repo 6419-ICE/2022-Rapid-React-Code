@@ -9,6 +9,11 @@ import com.ctre.phoenix.motorcontrol.can.*;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -40,6 +45,8 @@ public class DriveTrain extends SubsystemBase {
   //Differential drive train object
   private final DifferentialDrive m_drive = new DifferentialDrive(m_leftControllerGroup, m_rightControllerGroup);
 
+  private final DifferentialDriveOdometry m_odometry;
+
   //left and right side drive encoders
   private final TalonFXSensorCollection m_leftEncoder, m_rightEncoder;
 
@@ -50,8 +57,9 @@ public class DriveTrain extends SubsystemBase {
 
   /** Creates a new Drivetrain. */
   public DriveTrain() {
+    /*
     m_leftMotorLead.setSensorPhase(false);
-    m_rightMotorLead.setSensorPhase(true);
+    m_rightMotorLead.setSensorPhase(true);*/
 
     m_leftControllerGroup.setInverted(false);
     m_rightControllerGroup.setInverted(true);
@@ -100,6 +108,7 @@ public class DriveTrain extends SubsystemBase {
     headingPIDController.setTolerance(Constants.DrivetrainConstants.HeadingPID.headingPIDTolerance);
 
     m_gyro = new AHRS(SPI.Port.kMXP);
+    m_odometry = new DifferentialDriveOdometry(getRotation2d());
   }
   
   public TalonFX getLeftMotors(){
@@ -123,6 +132,12 @@ public class DriveTrain extends SubsystemBase {
 
   public void arcadeDrive(double fwd, double rot) {
     m_drive.arcadeDrive(fwd, rot);
+  }
+
+  public void tankDriveVolts(double leftVolts, double rightVolts) {
+    m_leftControllerGroup.setVoltage(leftVolts);
+    m_rightControllerGroup.setVoltage(rightVolts);
+    m_drive.feed();
   }
 
   public void stop() {
@@ -165,7 +180,7 @@ public class DriveTrain extends SubsystemBase {
     return m_leftEncoder.getIntegratedSensorPosition();
   }
   public double getRightDriveEncoderTick() {
-    return  m_rightEncoder.getIntegratedSensorPosition();
+    return  -m_rightEncoder.getIntegratedSensorPosition();
   }
 
   public double getLeftDriveEncoderDistance() {
@@ -178,6 +193,14 @@ public class DriveTrain extends SubsystemBase {
 
   public double getAverageEncoderDistance() {
     return (getLeftDriveEncoderDistance() + getLeftDriveEncoderDistance()) / 2.0;
+  }
+
+  public double getRightDriveEncoderRate() {
+    return -m_rightEncoder.getIntegratedSensorVelocity();
+  }
+
+  public double getLeftDriveEncoderRate() {
+    return m_leftEncoder.getIntegratedSensorVelocity();
   }
 
   public double getDriveEncoderRate() {
@@ -193,6 +216,10 @@ public class DriveTrain extends SubsystemBase {
     return m_gyro.getAngle();
   }
 
+  public Rotation2d getRotation2d(){
+    return m_gyro.getRotation2d();
+  }
+
   public double getYaw(){
     return m_gyro.getYaw();
   }
@@ -206,11 +233,24 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public double getTurnRate(){
-    return m_gyro.getRate();
+    return -m_gyro.getRate();
   }
 
   public void resetHeading(){
     m_gyro.reset();
+  }
+
+  public Pose2d getPose() {
+    return m_odometry.getPoseMeters();
+  }
+  
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(getLeftDriveEncoderRate() / Constants.DrivetrainConstants.ticksPerInch * .0254, getRightDriveEncoderRate() / Constants.DrivetrainConstants.ticksPerInch * .0254);
+  }
+
+  public void resetOdometry(Pose2d pose) {
+    resetEncoders();
+    m_odometry.resetPosition(pose, getRotation2d());
   }
 
   public void setDriveSetpoints(double left, double right){
@@ -254,12 +294,14 @@ public class DriveTrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    m_odometry.update(getRotation2d(), getLeftDriveEncoderDistance() * 0.0254, getRightDriveEncoderDistance() * 0.0254);
   }
   
   @Override
   public void initSendable(SendableBuilder builder) {
       builder.addDoubleProperty("Heading", this::getAngle, null);
-      builder.addDoubleProperty("Encoder Distance", this::getAverageEncoderDistance, null);
+      builder.addDoubleProperty("Left Encoder Distance", this::getLeftDriveEncoderTick, null);
+      builder.addDoubleProperty("Right Encoder Distance", this::getRightDriveEncoderTick, null);
       super.initSendable(builder);
   }
 }

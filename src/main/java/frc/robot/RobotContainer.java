@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Intake.armStates;
 import frc.robot.subsystems.Shooter.shooterStates;
+import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -43,6 +44,7 @@ public class RobotContainer {
   private final CenterOnGoal m_centerOnGoal = new CenterOnGoal(m_driveTrain, m_limelight);
   private final DriveByEncoder m_driveByEncoder = new DriveByEncoder(m_driveTrain, 36);
   private final PIDTurn m_PIDTurn = new PIDTurn(m_driveTrain, 180);
+  private final TrajectoryAttempt m_trajectoryAttempt = new TrajectoryAttempt(m_driveTrain);
 
   private static Joystick mechanismJoystick;
   private static Joystick gamepadController;
@@ -70,6 +72,7 @@ public class RobotContainer {
     autoChooser.addOption("Drive By Encoder", m_driveByEncoder);
     autoChooser.addOption("PID Turn", m_PIDTurn);
     autoChooser.addOption("Only Shoot", new AutonomousShoot(m_uptake, m_shooter, shooterStates.LOW, 10000));
+    autoChooser.addOption("Trajectory Attempt", m_trajectoryAttempt);
 
     SmartDashboard.putData("Autonomous", autoChooser);
   }
