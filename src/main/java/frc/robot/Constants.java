@@ -20,7 +20,7 @@ public final class Constants {
     public static class DrivetrainConstants{
         //Universal motor speed limit
         public static final double speedLmt = .5;
-        public static final double autoSpeedLmt = .15; 
+        public static final double autoSpeedLmt = .8; 
 
         //Drive train encoder values
         public static final double gearboxRatio = 1/10.71; // Input divided by output
@@ -39,7 +39,7 @@ public final class Constants {
             RIGHT_BACK_PIN = 4;
 
         public static class DrivePID {
-            public static final double kP = 0;
+            public static final double kP = 1;
             public static final double kI = 0;
             public static final double kD = 0;
             public static final double kF = 0;
@@ -48,15 +48,16 @@ public final class Constants {
         }
 
         public static class HeadingPID {
-            public static final double kP = 0.04;
+            public static final double kP = 0.008;
             public static final double kI = 0;
-            public static final double kD = 0.005;
+            public static final double kD = 0.00;
 
             public static final double headingPIDTolerance = 1;
         }
 
 
     }
+
     public static class TrajectoryConstants{
         public static final double ksVolts = 0.70925;
         public static final double kvVoltSecondsPerMeter = 2.2847;
@@ -65,20 +66,21 @@ public final class Constants {
         public static final double kpDrivePosition = 0.93512;
         public static final double kdDrivePosition = 0.059761;
 
-        public static final double kpDriveVel = 2.9623;
+        public static final double kpDriveVel = 0.11435;
+        public static final double kdDriveVel = 0.4;
 
-        public static final double kTrackWidthMeters = .5;
+        public static final double kTrackWidthMeters = .47625;
 
-        public static final double kMaxSpeedMetersPerSecond = 1.5;
-        public static final double kMaxAccelerationMetersPerSecond = .3;
+        public static final double kMaxSpeedMetersPerSecond = 3;
+        public static final double kMaxAccelerationMetersPerSecond = 1;
 
         public static final DifferentialDriveKinematics m_driveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
 
         // Larger values of b make convergence more aggressive like a proportional term
         // whereas larger values of zeta provide more damping in the response.
-        public static final double kRamseteB = 20;
+        public static final double kRamseteB = 2;
 
-        public static final double kRamseteZeta = 0.02;
+        public static final double kRamseteZeta = 0.7;
 
     }
 
@@ -128,7 +130,9 @@ public final class Constants {
         public static final int BACK_CLIMBER_ONE_PIN = 10;
         public static final int BACK_CLIMBER_TWO_PIN = 11;
 
-        public static final double hangerSpeedLmt = .8;
+        public static final int H_EFFECT_PORT = 2;
+
+        public static final double hangerSpeedLmt = .5;
     }
 
     public static final int joy1 = 0, buttonBox = 1, joy3 = 2;

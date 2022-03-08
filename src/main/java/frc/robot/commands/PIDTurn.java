@@ -37,7 +37,7 @@ public class PIDTurn extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_driveTrain.drive(-m_driveTrain.headingOutput(m_driveTrain.getAngle()), m_driveTrain.headingOutput(m_driveTrain.getAngle()), Constants.DrivetrainConstants.autoSpeedLmt);
+    m_driveTrain.drive(-m_driveTrain.headingOutput(m_driveTrain.getAngle()), m_driveTrain.headingOutput(m_driveTrain.getAngle()), Constants.DrivetrainConstants.speedLmt);
   }
 
   // Called once the command ends or is interrupted.
