@@ -128,7 +128,7 @@ public final class Constants {
         public static final int BACK_CLIMBER_ONE_PIN = 10;
         public static final int BACK_CLIMBER_TWO_PIN = 11;
 
-        public static final double hangerSpeedLmt = .8;
+        public static final double hangerSpeedLmt = .5;
     }
 
     public static final int joy1 = 0, buttonBox = 1, joy3 = 2;
