@@ -40,15 +40,9 @@ public class TrajectoryCommand extends RamseteCommand {
                                   Constants.TrajectoryConstants.kaVoltSecondsSquaredPerMeter),
       Constants.TrajectoryConstants.m_driveKinematics,
       drive::getWheelSpeeds,
-      leftController,
-      rightController,
-      (leftVolts, rightVolts) -> {
-        drive.tankDriveVolts(leftVolts, rightVolts);
-        SmartDashboard.putNumber("leftSetpoint", leftController.getSetpoint());
-        SmartDashboard.putNumber("leftSpeed", drive.getWheelSpeeds().leftMetersPerSecond);
-        SmartDashboard.putNumber("rightSetpoint", rightController.getSetpoint());
-        SmartDashboard.putNumber("rightSpeed", drive.getWheelSpeeds().rightMetersPerSecond);
-      },
+      new PIDController(Constants.TrajectoryConstants.kpDriveVel, 0, Constants.TrajectoryConstants.kdDriveVel),
+      new PIDController(Constants.TrajectoryConstants.kpDriveVel, 0, Constants.TrajectoryConstants.kdDriveVel),
+      drive::tankDriveVolts,
       drive
       );
     m_drive = drive;

@@ -49,6 +49,8 @@ public class HandleHanger extends CommandBase {
     SmartDashboard.putBoolean("lower hanger", RobotContainer.getLowerHangerButton());
     SmartDashboard.putBoolean("raise hanger", RobotContainer.getRaiseHangerButton());
     
+
+
     if(sensorState && m_hanger.getCurrentHangerState() == hangerStates.RAISED && RobotContainer.getLowerHangerButton()){
       m_hanger.setHangerState(hangerStates.LOWERING);
     } else if(sensorState && m_hanger.getCurrentHangerState() == hangerStates.LOWERED && RobotContainer.getRaiseHangerButton()){
@@ -76,6 +78,15 @@ public class HandleHanger extends CommandBase {
    } else {
      m_hanger.stopHanger();
    }
+
+    if(m_hanger.getCurrentHangerState() == hangerStates.LOWERED && !m_hanger.getMagnetDigitalInput()){
+      m_hanger.raiseHanger();
+    }
+
+    if(m_hanger.getCurrentHangerState() == hangerStates.RAISED && !m_hanger.getMagnetDigitalInput()){
+      m_hanger.lowerHanger();
+    }
+
   }
 
   // Called once the command ends or is interrupted.

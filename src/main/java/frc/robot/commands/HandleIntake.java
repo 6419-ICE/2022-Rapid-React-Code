@@ -54,9 +54,6 @@ public class HandleIntake extends CommandBase {
       m_intake.stopIntakeArm();
     }*/
 
-    if(m_intake.getCurrentArmState() == armStates.LOWERED && !sensorState){
-      
-    }
 
      if(sensorState && m_intake.getCurrentArmState() == armStates.RAISED && RobotContainer.getLowerIntakeButton()){
        m_intake.setArmState(armStates.LOWERING);
@@ -86,6 +83,13 @@ public class HandleIntake extends CommandBase {
       m_intake.stopIntakeArm();
     }
 
+    if(m_intake.getCurrentArmState() == armStates.LOWERED && !m_intake.getMagnetDigitalInput()){
+      m_intake.raiseIntakeArm();
+    }
+
+    if(m_intake.getCurrentArmState() == armStates.RAISED && !m_intake.getMagnetDigitalInput()){
+      m_intake.lowerIntakeArm();
+    }
   }
 
   // Called once the command ends or is interrupted.

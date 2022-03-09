@@ -19,7 +19,7 @@ public final class Constants {
     //Constants for the drive train
     public static class DrivetrainConstants{
         //Universal motor speed limit
-        public static final double speedLmt = .5;
+        public static final double speedLmt = .6;
         public static final double autoSpeedLmt = .8; 
 
         //Drive train encoder values
@@ -66,21 +66,21 @@ public final class Constants {
         public static final double kpDrivePosition = 0.93512;
         public static final double kdDrivePosition = 0.059761;
 
-        public static final double kpDriveVel = 0.11435;
-        public static final double kdDriveVel = 0.4;
+        public static final double kpDriveVel = 0.087469;
+        public static final double kdDriveVel = 0.0;
 
-        public static final double kTrackWidthMeters = .47625;
+        public static final double kTrackWidthMeters = .5;
 
         public static final double kMaxSpeedMetersPerSecond = 3;
-        public static final double kMaxAccelerationMetersPerSecond = 1;
+        public static final double kMaxAccelerationMetersPerSecond = .75;
 
         public static final DifferentialDriveKinematics m_driveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
 
         // Larger values of b make convergence more aggressive like a proportional term
         // whereas larger values of zeta provide more damping in the response.
-        public static final double kRamseteB = 2;
+        public static final double kRamseteB = 5.5;
 
-        public static final double kRamseteZeta = 0.7;
+        public static final double kRamseteZeta = 0.105;
 
     }
 
@@ -153,11 +153,11 @@ public final class Constants {
         public static final int runIntakeButton = 1; // Bottom Button
         public static final int runUptakeButton = 2; // Right Button
         public static final int centerButton = 3; // Left Button
-        public static final int button4 = 4; // Top Button
+        public static final int spoolUpFire = 4; // Top Button
         public static final int button5 = 5;
         public static final int reverseIntakeButton = 6;
-        public static final int reverseUptakeButton = 7;
-        public static final int button8 = 8;
+        public static final int spoolUpLowButton = 7;
+        public static final int spoolUpHighButton = 8;
         public static final int shooterLowButton = 9;
         public static final int shooterHighButton = 10;
         public static final int kGamepadButtonMode = -1;

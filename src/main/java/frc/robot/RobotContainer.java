@@ -102,10 +102,14 @@ public class RobotContainer {
 
     JoystickButton shootLowButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.shooterLowButton);
     JoystickButton shootHighButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.shooterHighButton);
+    JoystickButton spoolUpLowButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.spoolUpLowButton);
+    JoystickButton spoolUpHighButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.spoolUpHighButton);
     JoystickButton centerOnGoalButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.centerButton);
 
     shootLowButton.whenHeld(new TurretShoot(m_uptake, m_shooter, shooterStates.LOW), false);
     shootHighButton.whenHeld(new TurretShoot(m_uptake, m_shooter, shooterStates.HIGH), false);
+    spoolUpLowButton.whenHeld(new TurretSpool(m_uptake, m_shooter, shooterStates.LOW), false);
+    spoolUpHighButton.whenHeld(new TurretSpool(m_uptake, m_shooter, shooterStates.HIGH), false);
     centerOnGoalButton.whenPressed(new CenterOnGoal(m_driveTrain, m_limelight), false);
   }
   
@@ -155,8 +159,8 @@ public class RobotContainer {
     return mechanismJoystick.getRawButton(Constants.gamepadConstants.runUptakeButton);
   }
 
-  public static boolean getReverseUptakeButton() {
-    return mechanismJoystick.getRawButton(Constants.gamepadConstants.reverseUptakeButton);
+  public static boolean getShooterButton() {
+    return mechanismJoystick.getRawButton(Constants.gamepadConstants.spoolUpFire);
   }
 
   public static boolean getShooterHighButton(){

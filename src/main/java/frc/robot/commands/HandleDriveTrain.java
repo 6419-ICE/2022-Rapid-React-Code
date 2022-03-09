@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import org.opencv.features2d.KAZE;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -31,15 +33,17 @@ public class HandleDriveTrain extends CommandBase {
   public void initialize() {
     m_driveTrain.drive(0, 0);
     m_driveTrain.resetEncoders();
+    m_driveTrain.setMotorNeutralMode(NeutralMode.Coast);
   }
+
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double power = RobotContainer.getDriveTrainForward();
     double turn = RobotContainer.getDriveTrainTurn();
-    power = Math.copySign(Math.abs(Math.pow(power, 2)), power);
-    turn = Math.copySign(Math.abs(Math.pow(turn, 2)), turn);
+    power = Math.copySign(Math.abs(Math.pow(power, 3)), power);
+    turn = Math.copySign(Math.abs(Math.pow(turn, 3)), turn);
     m_driveTrain.arcadeDrive(power * Constants.DrivetrainConstants.speedLmt, turn * Constants.DrivetrainConstants.speedLmt);
     SmartDashboard.putNumber("Left Encoder Distance", m_driveTrain.getLeftDriveEncoderDistance());
     SmartDashboard.putNumber("Right Encoder Distance", m_driveTrain.getRightDriveEncoderDistance());
