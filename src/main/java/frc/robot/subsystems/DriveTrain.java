@@ -16,9 +16,11 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -62,8 +64,12 @@ public class DriveTrain extends SubsystemBase {
     m_rightMotorLead.setSensorPhase(true);*/
 
     m_leftControllerGroup.setInverted(false);
-    m_rightControllerGroup.setInverted(true);
-
+    m_rightControllerGroup.setInverted(false);
+    
+    m_leftMotorLead.setInverted(false);
+    m_rightMotorLead.setInverted(true);
+    m_leftMotors[1].setInverted(false);
+    m_rightMotors[1].setInverted(true);
     // Sets the feedback sensor for the motors
     m_leftMotorLead.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 30);
     m_rightMotorLead.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 30);
@@ -106,9 +112,8 @@ public class DriveTrain extends SubsystemBase {
     );
 
     headingPIDController.setTolerance(Constants.DrivetrainConstants.HeadingPID.headingPIDTolerance);
-
-    m_gyro = new AHRS(SPI.Port.kMXP);
-    m_odometry = new DifferentialDriveOdometry(getRotation2d());
+    m_gyro = new AHRS(SerialPort.Port.kMXP);
+    m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getYaw()));
   }
   
   public TalonFX getLeftMotors(){
@@ -137,6 +142,7 @@ public class DriveTrain extends SubsystemBase {
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     m_leftControllerGroup.setVoltage(leftVolts);
     m_rightControllerGroup.setVoltage(rightVolts);
+
     m_drive.feed();
   }
 
@@ -162,6 +168,7 @@ public class DriveTrain extends SubsystemBase {
     m_rightMotors[0].setNeutralMode(neutralMode);
     m_rightMotors[1].setNeutralMode(neutralMode);
   }
+
 
   public void setMotorLeader() {
     m_leftMotors[1].follow(m_leftMotorLead);
@@ -189,6 +196,14 @@ public class DriveTrain extends SubsystemBase {
 
   public double getRightDriveEncoderDistance() {
     return getRightDriveEncoderTick()/ Constants.DrivetrainConstants.ticksPerInch;
+  }
+
+  public double getLeftDriveEncoderMeters() {
+    return getLeftDriveEncoderTick()/ Constants.DrivetrainConstants.ticksPerInch * 0.0254;
+  }
+
+  public double getRightDriveEncoderMeters() {
+    return getRightDriveEncoderTick()/ Constants.DrivetrainConstants.ticksPerInch * 0.0254;
   }
 
   public double getAverageEncoderDistance() {
@@ -240,22 +255,38 @@ public class DriveTrain extends SubsystemBase {
     m_gyro.reset();
   }
 
+
+
   public Pose2d getPose() {
     return m_odometry.getPoseMeters();
   }
   
+  public double getDegrees(){
+    return m_odometry.getPoseMeters().getRotation().getDegrees();
+  }
+
+  public double getXPos(){
+    return m_odometry.getPoseMeters().getX();
+  }
+
+  public double getYPos(){
+    return m_odometry.getPoseMeters().getY();
+  }
+
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(getLeftDriveEncoderRate() / Constants.DrivetrainConstants.ticksPerInch * .0254, getRightDriveEncoderRate() / Constants.DrivetrainConstants.ticksPerInch * .0254);
+    return new DifferentialDriveWheelSpeeds((getLeftDriveEncoderRate() * 10) / (Constants.DrivetrainConstants.ticksPerInch / .0254), (getRightDriveEncoderRate() * 10) / (Constants.DrivetrainConstants.ticksPerInch / .0254));
   }
 
   public void resetOdometry(Pose2d pose) {
     resetEncoders();
-    m_odometry.resetPosition(pose, getRotation2d());
+    m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getYaw()));
   }
 
   public void setDriveSetpoints(double left, double right){
     m_leftMotorLead.set(TalonFXControlMode.Position, left * Constants.DrivetrainConstants.ticksPerInch);
     m_rightMotorLead.set(TalonFXControlMode.Position, right * Constants.DrivetrainConstants.ticksPerInch);
+    m_leftMotors[1].set(TalonFXControlMode.Position, left * Constants.DrivetrainConstants.ticksPerInch);
+    m_rightMotors[1].set(TalonFXControlMode.Position, right * Constants.DrivetrainConstants.ticksPerInch);
   }
 
   public double getDriveSetpoints(){
@@ -294,14 +325,23 @@ public class DriveTrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    m_odometry.update(getRotation2d(), getLeftDriveEncoderDistance() * 0.0254, getRightDriveEncoderDistance() * 0.0254);
+    m_odometry.update(Rotation2d.fromDegrees(getYaw()), getLeftDriveEncoderMeters(), getRightDriveEncoderMeters());
+    SmartDashboard.putNumber("leftSpeed", getWheelSpeeds().leftMetersPerSecond);
+
+    SmartDashboard.putNumber("rightSpeed", getWheelSpeeds().rightMetersPerSecond);
+
   }
   
   @Override
   public void initSendable(SendableBuilder builder) {
       builder.addDoubleProperty("Heading", this::getAngle, null);
-      builder.addDoubleProperty("Left Encoder Distance", this::getLeftDriveEncoderTick, null);
-      builder.addDoubleProperty("Right Encoder Distance", this::getRightDriveEncoderTick, null);
+      builder.addDoubleProperty("Yaw", this::getYaw, null);
+      builder.addDoubleProperty("Degrees", this::getDegrees, null);
+      builder.addDoubleProperty("Left Encoder Distance", this::getLeftDriveEncoderMeters, null);
+      builder.addDoubleProperty("Right Encoder Distance", this::getRightDriveEncoderMeters, null);
+      builder.addDoubleProperty("X Position", this::getXPos, null);
+      builder.addDoubleProperty("Y Position", this::getYPos, null);
+
       super.initSendable(builder);
   }
 }

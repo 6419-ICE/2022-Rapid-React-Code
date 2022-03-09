@@ -6,6 +6,9 @@ package frc.robot;
 
 import java.sql.Driver;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -15,9 +18,11 @@ import frc.robot.subsystems.*;
 import frc.robot.subsystems.Intake.armStates;
 import frc.robot.subsystems.Shooter.shooterStates;
 import frc.robot.Constants.TrajectoryConstants;
+import frc.robot.Constants.gamepadConstants;
 import frc.robot.commands.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
@@ -35,6 +40,8 @@ public class RobotContainer {
   private static final Hanger m_hanger = new Hanger();
   public static final Limelight m_limelight = new Limelight();
 
+  private TrajectoryPaths m_paths = new TrajectoryPaths(m_driveTrain);
+
   private final HandleDriveTrain m_handleDriveTrain = new HandleDriveTrain(m_driveTrain);
   private final HandleIntake m_handleIntake = new HandleIntake(m_intake);
   private final HandleUptake m_handleUptake = new HandleUptake(m_uptake);
@@ -45,9 +52,11 @@ public class RobotContainer {
   private final DriveByEncoder m_driveByEncoder = new DriveByEncoder(m_driveTrain, 36);
   private final PIDTurn m_PIDTurn = new PIDTurn(m_driveTrain, 180);
   private final TrajectoryAttempt m_trajectoryAttempt = new TrajectoryAttempt(m_driveTrain);
-
+  private final TrajectoryCommand m_trajectoryAttempt2 =  new TrajectoryCommand(TrajectoryPaths.getTrajectoryAttempt(), m_driveTrain); 
   private static Joystick mechanismJoystick;
   private static Joystick gamepadController;
+
+  
   
 
   private static SendableChooser<Command> autoChooser;
@@ -72,6 +81,7 @@ public class RobotContainer {
     autoChooser.addOption("Drive By Encoder", m_driveByEncoder);
     autoChooser.addOption("PID Turn", m_PIDTurn);
     autoChooser.addOption("Only Shoot", new AutonomousShoot(m_uptake, m_shooter, shooterStates.LOW, 10000));
+    autoChooser.addOption("Trajectory Attemp 2", new TrajectoryCommand(TrajectoryPaths.getTrajectoryAttempt(), m_driveTrain));
     autoChooser.addOption("Trajectory Attempt", m_trajectoryAttempt);
 
     SmartDashboard.putData("Autonomous", autoChooser);
@@ -92,13 +102,15 @@ public class RobotContainer {
 
     JoystickButton shootLowButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.shooterLowButton);
     JoystickButton shootHighButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.shooterHighButton);
+    JoystickButton spoolUpLowButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.spoolUpLowButton);
+    JoystickButton spoolUpHighButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.spoolUpHighButton);
     JoystickButton centerOnGoalButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.centerButton);
 
     shootLowButton.whenHeld(new TurretShoot(m_uptake, m_shooter, shooterStates.LOW), false);
     shootHighButton.whenHeld(new TurretShoot(m_uptake, m_shooter, shooterStates.HIGH), false);
+    spoolUpLowButton.whenHeld(new TurretSpool(m_uptake, m_shooter, shooterStates.LOW), false);
+    spoolUpHighButton.whenHeld(new TurretSpool(m_uptake, m_shooter, shooterStates.HIGH), false);
     centerOnGoalButton.whenPressed(new CenterOnGoal(m_driveTrain, m_limelight), false);
-
-
   }
   
   /*
@@ -132,7 +144,7 @@ public class RobotContainer {
   }
  
   public static boolean getRaiseHangerButton() {
-    return -mechanismJoystick.getRawAxis(Constants.gamepadConstants.moveHangerAxis) > .5;
+    return -mechanismJoystick.getRawAxis(Constants.gamepadConstants.moveHangerAxis)  > .5;
   }
 
   public static boolean getRunIntakeButton() {
@@ -147,8 +159,8 @@ public class RobotContainer {
     return mechanismJoystick.getRawButton(Constants.gamepadConstants.runUptakeButton);
   }
 
-  public static boolean getReverseUptakeButton() {
-    return mechanismJoystick.getRawButton(Constants.gamepadConstants.reverseUptakeButton);
+  public static boolean getShooterButton() {
+    return mechanismJoystick.getRawButton(Constants.gamepadConstants.spoolUpFire);
   }
 
   public static boolean getShooterHighButton(){
