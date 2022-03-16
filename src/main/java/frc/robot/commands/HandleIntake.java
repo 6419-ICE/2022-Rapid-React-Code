@@ -13,6 +13,7 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Uptake;
 import frc.robot.subsystems.Intake.armStates;
+import frc.robot.subsystems.Intake.armModes;
 
 public class HandleIntake extends CommandBase {
 
@@ -31,7 +32,9 @@ public class HandleIntake extends CommandBase {
   public void initialize() {
     m_intake.stopIntakeArm();
     m_intake.stopIntakeMotor();
+    if(m_intake.getCurrentArmState() == null){
     m_intake.setArmState(m_intake.getSelectedArmState());
+    }
     sensorState = m_intake.getMagnetDigitalInput();
   }
 
@@ -45,50 +48,51 @@ public class HandleIntake extends CommandBase {
     } else {
       m_intake.stopIntakeMotor();
     }
-    /*
-    if(RobotContainer.getLowerIntakeButton()){
-      m_intake.lowerIntakeArm();
-    } else if(RobotContainer.getRaiseIntakeButton()){
-      m_intake.raiseIntakeArm();
-    } else {
-      m_intake.stopIntakeArm();
-    }*/
-
-
-     if(sensorState && m_intake.getCurrentArmState() == armStates.RAISED && RobotContainer.getLowerIntakeButton()){
-       m_intake.setArmState(armStates.LOWERING);
-     } else if(sensorState && m_intake.getCurrentArmState() == armStates.LOWERED && RobotContainer.getRaiseIntakeButton()){
-       m_intake.setArmState(armStates.RAISING);
-     }
-
-    if(m_intake.getCurrentArmState() == armStates.RAISING){
-      if(sensorState && !m_intake.getMagnetDigitalInput()){
-        sensorState = false;
-      } else if(!sensorState && m_intake.getMagnetDigitalInput()){
-        sensorState = true;
-        m_intake.setArmState(armStates.RAISED);
+    
+    if(m_intake.getSelectedArmMode() == armModes.MANUAL){
+      if(RobotContainer.getLowerIntakeButton()){
+        m_intake.lowerIntakeArm();
+      } else if(RobotContainer.getRaiseIntakeButton()){
+        m_intake.raiseIntakeArm();
       } else {
+        m_intake.stopIntakeArm();
+      }
+    } else if(m_intake.getSelectedArmMode() == armModes.MAGNETIC){
+      if((sensorState && m_intake.getCurrentArmState() == armStates.RAISED && RobotContainer.getLowerIntakeButton())){
+        m_intake.setArmState(armStates.LOWERING);
+      } else if(sensorState && m_intake.getCurrentArmState() == armStates.LOWERED && RobotContainer.getRaiseIntakeButton()){
+        m_intake.setArmState(armStates.RAISING);
+      }
+
+      if(m_intake.getCurrentArmState() == armStates.RAISING){
+        if(sensorState && !m_intake.getMagnetDigitalInput()){
+          sensorState = false;
+        } else if(!sensorState && m_intake.getMagnetDigitalInput()){
+          sensorState = true;
+          m_intake.setArmState(armStates.RAISED);
+        } else {
+          m_intake.raiseIntakeArm();
+        }
+      }else if(m_intake.getCurrentArmState() == armStates.LOWERING){
+        if(sensorState && !m_intake.getMagnetDigitalInput()){
+          sensorState = false;
+        } else if(!sensorState && m_intake.getMagnetDigitalInput()){
+          sensorState = true;
+          m_intake.setArmState(armStates.LOWERED);
+        } else {
+          m_intake.lowerIntakeArm();
+        }
+      } else {
+        m_intake.stopIntakeArm();
+      }
+
+      if(m_intake.getCurrentArmState() == armStates.LOWERED && !m_intake.getMagnetDigitalInput()){
         m_intake.raiseIntakeArm();
       }
-    }else if(m_intake.getCurrentArmState() == armStates.LOWERING){
-      if(sensorState && !m_intake.getMagnetDigitalInput()){
-        sensorState = false;
-      } else if(!sensorState && m_intake.getMagnetDigitalInput()){
-        sensorState = true;
-        m_intake.setArmState(armStates.LOWERED);
-      } else {
+
+      if(m_intake.getCurrentArmState() == armStates.RAISED && !m_intake.getMagnetDigitalInput()){
         m_intake.lowerIntakeArm();
       }
-    } else {
-      m_intake.stopIntakeArm();
-    }
-
-    if(m_intake.getCurrentArmState() == armStates.LOWERED && !m_intake.getMagnetDigitalInput()){
-      m_intake.raiseIntakeArm();
-    }
-
-    if(m_intake.getCurrentArmState() == armStates.RAISED && !m_intake.getMagnetDigitalInput()){
-      m_intake.lowerIntakeArm();
     }
   }
 

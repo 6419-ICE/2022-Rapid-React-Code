@@ -33,6 +33,15 @@ public class Intake extends SubsystemBase {
   private armStates armState;
 
   private static SendableChooser<armStates> armStateChooser;
+
+  public static enum armModes {
+    MANUAL,
+    MAGNETIC
+  };
+
+  private armModes armMode;
+
+  private static SendableChooser<armModes> armModeChooser;
   
   /** Creates a new Intake. */
   public Intake() {
@@ -106,6 +115,22 @@ public class Intake extends SubsystemBase {
     return armStateChooser.getSelected();
   }
 
+  public armModes getCurrentArmMode() {
+    return armMode;
+  }
+
+  public void setArmMode(armModes mode){
+    armMode = mode;
+  }
+  
+  private String returnArmMode(){
+    return armMode.toString();
+  }
+
+  public armModes getSelectedArmMode(){
+    return armModeChooser.getSelected();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -115,6 +140,7 @@ public class Intake extends SubsystemBase {
   public void initSendable(SendableBuilder builder) {
     builder.addBooleanProperty("Hall Effect", this::getMagnetDigitalInput, null);
     builder.addStringProperty("Arm State", this::returnArmState, null);
+    builder.addStringProperty("Arm Mode", this::returnArmMode, null);
 
     armStateChooser = new SendableChooser<>();
     armStateChooser.setDefaultOption("Raised", armStates.RAISED);
@@ -123,6 +149,12 @@ public class Intake extends SubsystemBase {
     armStateChooser.addOption("Lowering", armStates.LOWERING);
 
     SmartDashboard.putData("Arm State", armStateChooser);
+
+    armModeChooser = new SendableChooser<>();
+    armModeChooser.setDefaultOption("Manual", armModes.MANUAL);
+    armModeChooser.addOption("Magnetic", armModes.MAGNETIC);
+
+    SmartDashboard.putData("Arm Mode", armModeChooser);
     
     super.initSendable(builder);
   }

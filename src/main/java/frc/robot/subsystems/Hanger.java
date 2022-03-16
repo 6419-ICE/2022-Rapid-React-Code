@@ -93,8 +93,8 @@ public class Hanger extends SubsystemBase {
     builder.addStringProperty("Arm State", this::returnHangerState, null);
 
     hangerStateChooser = new SendableChooser<>();
-    hangerStateChooser.setDefaultOption("Raised", hangerStates.RAISED);
-    hangerStateChooser.addOption("Lowered", hangerStates.LOWERED);
+    hangerStateChooser.addOption("Raised", hangerStates.RAISED);
+    hangerStateChooser.setDefaultOption("Lowered", hangerStates.LOWERED);
     hangerStateChooser.addOption("Raising", hangerStates.RAISING);
     hangerStateChooser.addOption("Lowering", hangerStates.LOWERING);
 

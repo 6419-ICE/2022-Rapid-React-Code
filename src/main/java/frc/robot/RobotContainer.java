@@ -48,9 +48,9 @@ public class RobotContainer {
   private final HandleShooter m_handleShooter = new HandleShooter(m_shooter);
   private final HandleHanger m_handleHanger = new HandleHanger(m_hanger);
   private final HandleLimelight m_handleLimelight = new HandleLimelight(m_limelight);
-  private final CenterOnGoal m_centerOnGoal = new CenterOnGoal(m_driveTrain, m_limelight);
+  private final AutonomousCenterOnGoal m_centerOnGoal = new AutonomousCenterOnGoal(m_driveTrain, m_limelight);
   private final DriveByEncoder m_driveByEncoder = new DriveByEncoder(m_driveTrain, 36);
-  private final PIDTurn m_PIDTurn = new PIDTurn(m_driveTrain, 180);
+  private final PIDTurn m_PIDTurn = new PIDTurn(m_driveTrain, 20);
   private final TrajectoryAttempt m_trajectoryAttempt = new TrajectoryAttempt(m_driveTrain);
   private final TrajectoryCommand m_trajectoryAttempt2 =  new TrajectoryCommand(TrajectoryPaths.getTrajectoryAttempt(), m_driveTrain); 
   private static Joystick mechanismJoystick;
@@ -80,9 +80,11 @@ public class RobotContainer {
     autoChooser.addOption("Shoot High", new ShootHighBackAwayAuto(m_shooter, m_uptake, m_driveTrain));
     autoChooser.addOption("Drive By Encoder", m_driveByEncoder);
     autoChooser.addOption("PID Turn", m_PIDTurn);
-    autoChooser.addOption("Only Shoot", new AutonomousShoot(m_uptake, m_shooter, shooterStates.LOW, 10000));
-    autoChooser.addOption("Trajectory Attemp 2", new TrajectoryCommand(TrajectoryPaths.getTrajectoryAttempt(), m_driveTrain));
+    autoChooser.addOption("Center on Goal", new AutonomousCenterOnGoal(m_driveTrain, m_limelight));
+    autoChooser.addOption("Only Shoot", new AutonomousShoot(m_uptake, m_shooter, shooterStates.HIGH, 10000));
+    autoChooser.addOption("Trajectory Attempt 2", new TrajectoryCommand(TrajectoryPaths.getTrajectoryAttempt(), m_driveTrain));
     autoChooser.addOption("Trajectory Attempt", m_trajectoryAttempt);
+    autoChooser.addOption("Two Ball Auto", new TwoBallAuto(m_driveTrain, m_intake, m_uptake, m_shooter, m_limelight));
 
     SmartDashboard.putData("Autonomous", autoChooser);
   }
@@ -110,7 +112,7 @@ public class RobotContainer {
     shootHighButton.whenHeld(new TurretShoot(m_uptake, m_shooter, shooterStates.HIGH), false);
     spoolUpLowButton.whenHeld(new TurretSpool(m_uptake, m_shooter, shooterStates.LOW), false);
     spoolUpHighButton.whenHeld(new TurretSpool(m_uptake, m_shooter, shooterStates.HIGH), false);
-    centerOnGoalButton.whenPressed(new CenterOnGoal(m_driveTrain, m_limelight), false);
+    centerOnGoalButton.whenPressed(new AutonomousCenterOnGoal(m_driveTrain, m_limelight), false);
   }
   
   /*

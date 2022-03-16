@@ -21,9 +21,12 @@ public class HandleDriveTrain extends CommandBase {
 
   private final DriveTrain m_driveTrain;
 
+  private double m_speedLmt;
+
   public HandleDriveTrain(DriveTrain driveTrain) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_driveTrain = driveTrain;
+    m_speedLmt = Constants.DrivetrainConstants.speedLmt;
     addRequirements(m_driveTrain);
 
   }
@@ -33,7 +36,7 @@ public class HandleDriveTrain extends CommandBase {
   public void initialize() {
     m_driveTrain.drive(0, 0);
     m_driveTrain.resetEncoders();
-    m_driveTrain.setMotorNeutralMode(NeutralMode.Coast);
+    m_driveTrain.setMotorNeutralMode(NeutralMode.Brake);
   }
 
 

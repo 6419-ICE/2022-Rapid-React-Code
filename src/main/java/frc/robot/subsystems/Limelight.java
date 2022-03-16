@@ -179,14 +179,14 @@ public class Limelight extends SubsystemBase {
       lightModeSendableChooser = new SendableChooser<>();
 
       lightModeSendableChooser.addOption(LightMode.DEFAULT.toString(), LightMode.DEFAULT);
-      lightModeSendableChooser.setDefaultOption(LightMode.OFF.toString(), LightMode.OFF);
+      lightModeSendableChooser.addOption(LightMode.OFF.toString(), LightMode.OFF);
       lightModeSendableChooser.addOption(LightMode.BLINK.toString(), LightMode.BLINK);
-      lightModeSendableChooser.addOption(LightMode.ON.toString(), LightMode.ON);
+      lightModeSendableChooser.setDefaultOption(LightMode.ON.toString(), LightMode.ON);
 
       cameraModeSendableChooser = new SendableChooser<>();
 
-      cameraModeSendableChooser.setDefaultOption(CameraMode.DRIVER_CAMERA.toString(), CameraMode.DRIVER_CAMERA);
-      cameraModeSendableChooser.addOption(CameraMode.VISION.toString(), CameraMode.VISION);
+      cameraModeSendableChooser.addOption(CameraMode.DRIVER_CAMERA.toString(), CameraMode.DRIVER_CAMERA);
+      cameraModeSendableChooser.setDefaultOption(CameraMode.VISION.toString(), CameraMode.VISION);
 
       SmartDashboard.putData("Light Mode", lightModeSendableChooser);
       SmartDashboard.putData("Camera Mode", cameraModeSendableChooser);

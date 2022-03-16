@@ -93,7 +93,7 @@ public final class Constants {
             H_EFFECT_PORT = 0;
 
         public static final double
-            armSpdLmt = .3,
+            armSpdLmt = .6,
             motorSpdLmt = .7;
     }
 
@@ -107,13 +107,13 @@ public final class Constants {
 
         public static final double
             uptakeMotorLmt = .9,
-            loadMotorLmt = .4;
+            loadMotorLmt = .5;
     }
 
     public static class ShooterConstants {
         public static final int SHOOTER_MOTOR_PIN = 9;
 
-        public static final double SHOOTER_HIGH_FIRING_SPEED = 11500.0;
+        public static final double SHOOTER_HIGH_FIRING_SPEED = 11100.0;
         public static final double SHOOTER_LOW_FIRING_SPEED = 6000.0;
 
         public static final int kPIDLoopIdx = 0;

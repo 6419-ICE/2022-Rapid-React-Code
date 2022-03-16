@@ -79,9 +79,9 @@ public class HandleHanger extends CommandBase {
      m_hanger.stopHanger();
    }
 
-    if(m_hanger.getCurrentHangerState() == hangerStates.LOWERED && !m_hanger.getMagnetDigitalInput()){
-      m_hanger.raiseHanger();
-    }
+    // if(m_hanger.getCurrentHangerState() == hangerStates.LOWERED && !m_hanger.getMagnetDigitalInput()){
+    //   m_hanger.raiseHanger();
+    // }
 
     if(m_hanger.getCurrentHangerState() == hangerStates.RAISED && !m_hanger.getMagnetDigitalInput()){
       m_hanger.lowerHanger();
