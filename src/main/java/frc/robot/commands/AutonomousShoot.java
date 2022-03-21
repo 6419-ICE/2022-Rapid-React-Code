@@ -47,7 +47,10 @@ public class AutonomousShoot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    // SmartDashboard.putBoolean("isDone", isDone);
+    // SmartDashboard.putBoolean("firstBall", firstBall);
+    // SmartDashboard.putBoolean("secondBall", secondBall);
+    SmartDashboard.putNumber("Shooter Speed", m_shooter.getShooterSpeed());
     Integer timeOut = 0;
     if(m_shooterState == shooterStates.HIGH){
       m_shooter.spoolUpHigh();

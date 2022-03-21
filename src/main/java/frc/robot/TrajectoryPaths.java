@@ -84,7 +84,7 @@ public class TrajectoryPaths {
                 new Translation2d(.5, 0)
                 ),
             // End position
-            new Pose2d(1, 0, new Rotation2d(-Math.toRadians(0))),
+            new Pose2d(1.6, 0, new Rotation2d(-Math.toRadians(0))),
             // Pass config
             config
         );

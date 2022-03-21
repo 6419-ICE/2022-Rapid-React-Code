@@ -64,7 +64,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isShooterReadyHigh() {
-    return (m_shooterEncoder.getIntegratedSensorVelocity() < -Constants.ShooterConstants.SHOOTER_HIGH_FIRING_SPEED*.9);
+    return (m_shooterEncoder.getIntegratedSensorVelocity() < -Constants.ShooterConstants.SHOOTER_HIGH_FIRING_SPEED*.9 && m_shooterEncoder.getIntegratedSensorVelocity() > -Constants.ShooterConstants.SHOOTER_HIGH_FIRING_SPEED*1.05);
   }
 
   public boolean isShooterReadyLow() {

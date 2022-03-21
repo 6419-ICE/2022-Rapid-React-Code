@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -22,6 +23,7 @@ public class AutonomousCenterOnGoal extends CommandBase {
   private double initAngle;
   private double angle;
   private double desiredAngle;
+  private double initTime;
 
   public AutonomousCenterOnGoal(DriveTrain driveTrain, Limelight limelight) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -40,12 +42,13 @@ public class AutonomousCenterOnGoal extends CommandBase {
     // m_limelight.setCameraMode(CameraMode.VISION);
     // m_limelight.setLightMode(LightMode.ON);
     SmartDashboard.putBoolean("Finished", false);
+    initTime = Timer.getFPGATimestamp();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      double frictionCoefficient = 0.07;
+      double frictionCoefficient = .1;
       double turnPower = ((Math.abs(m_limelight.getHorizontalAngle()) * (1/27.5)) * Constants.DrivetrainConstants.speedLmt) + frictionCoefficient;
       SmartDashboard.putNumber("Angle", m_limelight.getHorizontalAngle());
       if(m_limelight.getHorizontalAngle() > 1.5){
@@ -73,6 +76,6 @@ public class AutonomousCenterOnGoal extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(m_limelight.getHorizontalAngle()) < 1.5;
+    return Math.abs(m_limelight.getHorizontalAngle()) < 1.5 || Timer.getFPGATimestamp() > initTime + 3;
   }
 }
