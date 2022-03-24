@@ -5,8 +5,12 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SensorCollection;
+import com.ctre.phoenix.motorcontrol.TalonSRXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -18,10 +22,11 @@ import frc.robot.RobotContainer;
 
 public class Intake extends SubsystemBase {
 
-  private final TalonSRX intakeArm = new TalonSRX(Constants.IntakeConstants.INTAKE_ARM_PIN);
-  private final TalonSRX intakeMotor = new TalonSRX(Constants.IntakeConstants.INTAKE_MOTOR_PIN);
+  private final WPI_TalonSRX intakeArm = new WPI_TalonSRX(Constants.IntakeConstants.INTAKE_ARM_PIN);
+  private final WPI_TalonSRX intakeMotor = new WPI_TalonSRX(Constants.IntakeConstants.INTAKE_MOTOR_PIN);
 
   private final DigitalInput hEffectSensor = new DigitalInput(Constants.IntakeConstants.H_EFFECT_PORT);
+  private final SensorCollection intakeArmSensor;
 
   public static enum armStates {
     RAISED,
@@ -36,7 +41,8 @@ public class Intake extends SubsystemBase {
 
   public static enum armModes {
     MANUAL,
-    MAGNETIC
+    MAGNETIC,
+    ENCODER
   };
 
   private armModes armMode;
@@ -46,6 +52,10 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   public Intake() {
     intakeMotor.setInverted(true);
+    
+    intakeArm.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 30);
+    intakeArmSensor = intakeArm.getSensorCollection();
+
     intakeArm.setNeutralMode(NeutralMode.Brake);
   }
 
@@ -77,7 +87,7 @@ public class Intake extends SubsystemBase {
     intakeMotor.set(ControlMode.PercentOutput, 0);
   }
 
-  //Intake arm functions
+  //Intake arm motor functions
 
   public void setIntakeArmPower(double power) {
     intakeArm.set(ControlMode.PercentOutput, power * Constants.IntakeConstants.armSpdLmt);
@@ -94,6 +104,28 @@ public class Intake extends SubsystemBase {
   public void stopIntakeArm(){
     intakeArm.set(ControlMode.PercentOutput, 0);
   }
+
+  //Intake arm sensor functions
+
+  public double getArmRelPos(){
+    return intakeArmSensor.getQuadraturePosition();
+  }
+  public double getArmAbsPos(){
+    return intakeArmSensor.getPulseWidthPosition();
+  }
+
+  public void setArmRelPos(int pos){
+    intakeArmSensor.setQuadraturePosition(pos, 30);
+  }
+  public void resetArmRelPos(){
+    intakeArmSensor.setQuadraturePosition(0, 30);
+  }
+
+  public boolean isArmRaised(){
+    return Math.abs(this.getArmAbsPos()-Constants.IntakeConstants.encoderRaisedPosition) < Constants.IntakeConstants.encoderTolerance;
+  }
+
+  //Intake arm hall effect sensor functions
 
   public boolean getMagnetDigitalInput() {
     return !hEffectSensor.get();
@@ -153,6 +185,7 @@ public class Intake extends SubsystemBase {
     armModeChooser = new SendableChooser<>();
     armModeChooser.setDefaultOption("Manual", armModes.MANUAL);
     armModeChooser.addOption("Magnetic", armModes.MAGNETIC);
+    armModeChooser.addOption("Encoder", armModes.ENCODER);
 
     SmartDashboard.putData("Arm Mode", armModeChooser);
     

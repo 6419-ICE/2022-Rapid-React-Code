@@ -20,6 +20,7 @@ public class HandleIntake extends CommandBase {
   private final Intake m_intake;
 
   private boolean sensorState;
+  private boolean isHomed;
 
   /** Creates a new HandleIntake. */
   public HandleIntake(Intake intake) {
@@ -33,9 +34,13 @@ public class HandleIntake extends CommandBase {
     m_intake.stopIntakeArm();
     m_intake.stopIntakeMotor();
     if(m_intake.getCurrentArmState() == null){
-    m_intake.setArmState(m_intake.getSelectedArmState());
+      m_intake.setArmState(m_intake.getSelectedArmState());
+    }
+    if(m_intake.getCurrentArmMode() == armModes.ENCODER){
+      isHomed = m_intake.isArmRaised();
     }
     sensorState = m_intake.getMagnetDigitalInput();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -73,7 +78,7 @@ public class HandleIntake extends CommandBase {
         } else {
           m_intake.raiseIntakeArm();
         }
-      }else if(m_intake.getCurrentArmState() == armStates.LOWERING){
+      } else if(m_intake.getCurrentArmState() == armStates.LOWERING){
         if(sensorState && !m_intake.getMagnetDigitalInput()){
           sensorState = false;
         } else if(!sensorState && m_intake.getMagnetDigitalInput()){
@@ -92,6 +97,10 @@ public class HandleIntake extends CommandBase {
 
       if(m_intake.getCurrentArmState() == armStates.RAISED && !m_intake.getMagnetDigitalInput()){
         m_intake.lowerIntakeArm();
+      }
+    }else if(m_intake.getCurrentArmMode() == armModes.ENCODER){
+      if(!isHomed){
+        //m_
       }
     }
   }

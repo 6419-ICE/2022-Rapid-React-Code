@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -79,6 +80,11 @@ public class Hanger extends SubsystemBase {
 
   public boolean getMagnetDigitalInput() {
     return !hEffectSensor.get();
+  }
+  
+  public boolean timerReady(double init, double wait) {
+    double currentTime = Timer.getFPGATimestamp();
+    return currentTime > init + wait;
   }
 
   @Override

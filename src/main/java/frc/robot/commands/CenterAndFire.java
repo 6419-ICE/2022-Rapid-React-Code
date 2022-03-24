@@ -5,26 +5,23 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.TrajectoryPaths;
-import frc.robot.commands.*;
-import frc.robot.subsystems.*;
-import frc.robot.subsystems.Intake.armStates;
+import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Uptake;
 import frc.robot.subsystems.Shooter.shooterStates;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class TwoBallAuto extends SequentialCommandGroup {
-  /** Creates a new TwoBallAuto. */
-  public TwoBallAuto(DriveTrain driveTrain, Intake intake, Uptake uptake, Shooter shooter, Limelight limelight) {
+public class CenterAndFire extends SequentialCommandGroup {
+  /** Creates a new CenterAndFire. */
+  public CenterAndFire(DriveTrain driveTrain, Uptake uptake, Limelight limelight, Shooter shooter, shooterStates shooterState) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      parallel(
-        new AutonomousMoveIntake(intake, armStates.LOWERING),
-        new TrajectoryCommand(TrajectoryPaths.getTrajectoryTwoBalls(), driveTrain)
-      ),
-      new CenterAndFire(driveTrain, uptake, limelight, shooter, shooterStates.HIGH)
+      new CenterOnGoalPID(driveTrain, limelight).withTimeout(2),
+      new TurretShoot(uptake, shooter, shooterState).withTimeout(2)
     );
   }
 }

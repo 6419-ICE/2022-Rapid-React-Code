@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.*;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,6 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.DrivetrainConstants;
 
 public class DriveTrain extends SubsystemBase {
 
@@ -102,6 +104,7 @@ public class DriveTrain extends SubsystemBase {
     m_rightMotorLead.setSelectedSensorPosition(0);
 
     setMaxMotorSpeed(Constants.DrivetrainConstants.speedLmt);
+    setMinMotorSpeed(0);
     setMotorNeutralMode(NeutralMode.Brake);
     setMotorLeader();
 
@@ -160,6 +163,17 @@ public class DriveTrain extends SubsystemBase {
     m_leftMotors[1].configPeakOutputReverse(-speed);
     m_rightMotors[1].configPeakOutputForward(speed);
     m_rightMotors[1].configPeakOutputReverse(-speed);
+  }
+
+  public void setMinMotorSpeed(double speed) {
+    m_leftMotors[0].configNominalOutputForward(speed);
+    m_leftMotors[0].configNominalOutputReverse(-speed);
+    m_rightMotors[0].configNominalOutputForward(speed);
+    m_rightMotors[0].configNominalOutputReverse(-speed);
+    m_leftMotors[1].configNominalOutputForward(speed);
+    m_leftMotors[1].configNominalOutputReverse(-speed);
+    m_rightMotors[1].configNominalOutputForward(speed);
+    m_rightMotors[1].configNominalOutputReverse(-speed);
   }
 
   public void setMotorNeutralMode(NeutralMode neutralMode){
@@ -253,6 +267,7 @@ public class DriveTrain extends SubsystemBase {
 
   public void resetHeading(){
     m_gyro.reset();
+    m_gyro.zeroYaw();
   }
 
 
@@ -315,11 +330,28 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public double headingOutput(double value){
+    double clampedValue = MathUtil.clamp(
+                            Math.abs(headingPIDController.calculate(value)),
+                            Constants.DrivetrainConstants.HeadingPID.lowerClampBoundary, 
+                            Constants.DrivetrainConstants.HeadingPID.upperClampBoundary);
+
+    return Math.copySign(clampedValue, value);
+  }
+  public double headingOutputNoClamp(double value){
+    /*double clampedValue = MathUtil.clamp(
+                            Math.abs(headingPIDController.calculate(value)),
+                            Constants.DrivetrainConstants.HeadingPID.lowerClampBoundary, 
+                            Constants.DrivetrainConstants.HeadingPID.upperClampBoundary);*/
     return headingPIDController.calculate(value);
   }
 
   public double headingOutput(double value, double setPoint){
-    return headingPIDController.calculate(value, setPoint);
+    double clampedValue = MathUtil.clamp(
+                            Math.abs(headingPIDController.calculate(value, setPoint)),
+                            Constants.DrivetrainConstants.HeadingPID.lowerClampBoundary, 
+                            Constants.DrivetrainConstants.HeadingPID.upperClampBoundary);
+
+    return Math.copySign(clampedValue, value);
   }
 
   @Override

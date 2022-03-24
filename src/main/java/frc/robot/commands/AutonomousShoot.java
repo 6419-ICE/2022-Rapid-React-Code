@@ -21,6 +21,8 @@ public class AutonomousShoot extends CommandBase {
 
   private Integer m_maxMs;
 
+  private double time;
+
   private boolean firstBall;
   private boolean secondBall;
   private boolean isDone;
@@ -39,6 +41,7 @@ public class AutonomousShoot extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    time = Timer.getFPGATimestamp();
     firstBall = true;
     secondBall = false;
     isDone = false;
@@ -48,40 +51,43 @@ public class AutonomousShoot extends CommandBase {
   @Override
   public void execute() {
     
-    Integer timeOut = 0;
     if(m_shooterState == shooterStates.HIGH){
       m_shooter.spoolUpHigh();
-      if(!m_shooter.isShooterReadyHigh() && timeOut < m_maxMs){
-        Timer.delay(0.001);
-        timeOut++;
-      }
-      if(timeOut < m_maxMs && m_shooter.isShooterReadyHigh()){
-        m_uptake.runLoader();
-        if(m_uptake.isCargoPresent()){
-          m_uptake.runUptake();
-        }
-      }
-    } else{
-      m_shooter.spoolUpLow();
-      if(!m_shooter.isShooterReadyLow()){
-        Timer.delay(0.001);
-        timeOut++;
-      }
-      if(timeOut < m_maxMs && m_shooter.isShooterReadyLow()){
+      if(m_shooter.timerReady(time, 1.5)){
         m_uptake.runUptake();
         if(m_uptake.isCargoPresent()){
           m_uptake.runLoader();
         }
       }
+    } 
+    if (m_shooterState == shooterStates.LOW ){
+      m_shooter.spoolUpLow();
+      if(m_shooter.timerReady(time, 1.5)){
+        m_uptake.runUptake();
+        if(m_uptake.isCargoPresent()){
+          m_uptake.runUptake();
+        }
+      }
     }
+    /*if(firstBall){
+      if(!m_uptake.isCargoPresent()){
+        firstBall = false;
+      }
+    } else {
+      if(!secondBall && m_uptake.isCargoPresent()){
+        secondBall = true;
+      } else if(secondBall && !m_uptake.isCargoPresent()){
+        isDone = true;
+      }
+    }*/
     if(!m_uptake.isCargoPresent() && secondBall){
       isDone = true;
     }
     if(!m_uptake.isCargoPresent()){
-      m_uptake.runUptake();
+      //m_uptake.runUptake();
       firstBall = false;
     }
-    if(m_uptake.isCargoPresent() && firstBall == false){
+    if(m_uptake.isCargoPresent() && !firstBall){
       secondBall = true;
     }
   }

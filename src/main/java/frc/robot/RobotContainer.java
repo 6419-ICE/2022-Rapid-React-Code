@@ -50,7 +50,7 @@ public class RobotContainer {
   private final HandleLimelight m_handleLimelight = new HandleLimelight(m_limelight);
   private final AutonomousCenterOnGoal m_centerOnGoal = new AutonomousCenterOnGoal(m_driveTrain, m_limelight);
   private final DriveByEncoder m_driveByEncoder = new DriveByEncoder(m_driveTrain, 36);
-  private final PIDTurn m_PIDTurn = new PIDTurn(m_driveTrain, 20);
+  private final CenterOnGoalPID m_CenterOnGoalPID = new CenterOnGoalPID(m_driveTrain, m_limelight);
   private final TrajectoryAttempt m_trajectoryAttempt = new TrajectoryAttempt(m_driveTrain);
   private final TrajectoryCommand m_trajectoryAttempt2 =  new TrajectoryCommand(TrajectoryPaths.getTrajectoryAttempt(), m_driveTrain); 
   private static Joystick mechanismJoystick;
@@ -79,8 +79,7 @@ public class RobotContainer {
     autoChooser.addOption("Shoot Low", new ShootLowBackAwayAuto(m_shooter, m_uptake, m_driveTrain, m_intake));
     autoChooser.addOption("Shoot High", new ShootHighBackAwayAuto(m_shooter, m_uptake, m_driveTrain));
     autoChooser.addOption("Drive By Encoder", m_driveByEncoder);
-    autoChooser.addOption("PID Turn", m_PIDTurn);
-    autoChooser.addOption("Center on Goal", new AutonomousCenterOnGoal(m_driveTrain, m_limelight));
+    autoChooser.addOption("PID Turn", m_CenterOnGoalPID);
     autoChooser.addOption("Only Shoot", new AutonomousShoot(m_uptake, m_shooter, shooterStates.HIGH, 10000));
     autoChooser.addOption("Trajectory Attempt 2", new TrajectoryCommand(TrajectoryPaths.getTrajectoryAttempt(), m_driveTrain));
     autoChooser.addOption("Trajectory Attempt", m_trajectoryAttempt);
@@ -110,9 +109,9 @@ public class RobotContainer {
 
     shootLowButton.whenHeld(new TurretShoot(m_uptake, m_shooter, shooterStates.LOW), false);
     shootHighButton.whenHeld(new TurretShoot(m_uptake, m_shooter, shooterStates.HIGH), false);
-    spoolUpLowButton.whenHeld(new TurretSpool(m_uptake, m_shooter, shooterStates.LOW), false);
-    spoolUpHighButton.whenHeld(new TurretSpool(m_uptake, m_shooter, shooterStates.HIGH), false);
-    centerOnGoalButton.whenPressed(new AutonomousCenterOnGoal(m_driveTrain, m_limelight), false);
+    spoolUpLowButton.whenHeld(new SpoolUpFire(m_uptake, m_shooter, shooterStates.LOW), false);
+    spoolUpHighButton.whenHeld(new SpoolUpFire(m_uptake, m_shooter, shooterStates.HIGH), false);
+    centerOnGoalButton.whenHeld(new CenterAndFire(m_driveTrain, m_uptake, m_limelight, m_shooter, shooterStates.HIGH), false);
   }
   
   /*

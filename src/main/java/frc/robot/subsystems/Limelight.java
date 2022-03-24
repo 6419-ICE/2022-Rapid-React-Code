@@ -101,7 +101,7 @@ public class Limelight extends SubsystemBase {
 
   /** @return a horizontal angle from -27 to 27 between the target and the camera */
   public double getHorizontalAngle() {
-      return horizontalAngle.getDouble(0);
+      return -horizontalAngle.getDouble(0);
   }
 
   /** @return a vertical angle from -27 to 27 between the target and the camera */
