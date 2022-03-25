@@ -41,9 +41,9 @@ public class TurretShoot extends CommandBase {
     if(m_shooterState == shooterStates.HIGH){
       m_shooter.spoolUpHigh();
       if(m_shooter.timerReady(time, 1.5)){
-        m_uptake.runLoader();
+        m_uptake.runUptake();
         if(m_uptake.isCargoPresent()){
-          m_uptake.setUptakePower(.6);
+          m_uptake.runLoader();
         }
       }
     }
@@ -51,7 +51,7 @@ public class TurretShoot extends CommandBase {
     if(m_shooterState == shooterStates.LOW){
       m_shooter.spoolUpLow();
       if(m_shooter.timerReady(time, 1.5)){
-          m_uptake.setUptakePower(.6);
+          m_uptake.runUptake();
           if (m_uptake.isCargoPresent()){
             m_uptake.runLoader();
           } 

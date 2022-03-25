@@ -19,8 +19,10 @@ public final class Constants {
     //Constants for the drive train
     public static class DrivetrainConstants{
         //Universal motor speed limit
-        public static final double speedLmt = .6;
-        public static final double autoSpeedLmt = .8; 
+        public static final double speedLmt = .49;
+        public static final double autoSpeedLmt = .8;
+        public static final double driveFwdAccelLmt = 1.5;
+        public static final double driveTurnAccelLmt = 4;
 
         //Drive train encoder values
         public static final double gearboxRatio = 1/10.71; // Input divided by output
@@ -39,48 +41,64 @@ public final class Constants {
             RIGHT_BACK_PIN = 4;
 
         public static class DrivePID {
-            public static final double kP = 1;
-            public static final double kI = 0;
-            public static final double kD = 0;
-            public static final double kF = 0;
+            public static final double 
+                kP = 1,
+                kI = 0,
+                kD = 0,
+                kF = 0;
 
-            public static final double drivePIDTolerance = 2;
+            public static final double 
+                drivePIDTolerance = 2;
         }
 
         public static class HeadingPID {
-            public static final double kP = 0.008;
-            public static final double kI = 0;
-            public static final double kD = 0.00;
+            public static final double 
+                kP = 0.013,
+                kI = 0,
+                kD = 0.0005;
 
-            public static final double headingPIDTolerance = 1;
+            public static final double 
+                headingPIDTolerance = .75;
+
+            public static final double 
+                lowerClampBoundary = .15,
+                upperClampBoundary = .8;            
         }
 
 
     }
 
     public static class TrajectoryConstants{
-        public static final double ksVolts = 0.70925;
-        public static final double kvVoltSecondsPerMeter = 2.2847;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.24799;
+        public static final double 
+            ksVolts = 0.70925,
+            kvVoltSecondsPerMeter = 2.2847,
+            kaVoltSecondsSquaredPerMeter = 0.24799;
 
-        public static final double kpDrivePosition = 0.93512;
-        public static final double kdDrivePosition = 0.059761;
+        public static final double 
+            kpDrivePosition = 0.93512,
+            kdDrivePosition = 0.059761;
 
-        public static final double kpDriveVel = 0.087469;
-        public static final double kdDriveVel = 0.0;
+        public static final double 
+            kpDriveVel = 0.087469,
+            kdDriveVel = 0.0;
 
-        public static final double kTrackWidthMeters = .5;
+        public static final double 
+            kTrackWidthMeters = .5;
 
-        public static final double kMaxSpeedMetersPerSecond = 3;
-        public static final double kMaxAccelerationMetersPerSecond = .75;
+        public static final double 
+            kMaxSpeedMetersPerSecond = 3,
+            kMaxAccelerationMetersPerSecond = .75;
 
-        public static final DifferentialDriveKinematics m_driveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
+        public static final DifferentialDriveKinematics 
+            m_driveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
 
         // Larger values of b make convergence more aggressive like a proportional term
         // whereas larger values of zeta provide more damping in the response.
-        public static final double kRamseteB = 5.5;
+        public static final double 
+            kRamseteB = 5.5;
 
-        public static final double kRamseteZeta = 0.105;
+        public static final double 
+            kRamseteZeta = 0.105;
 
     }
 
@@ -93,8 +111,28 @@ public final class Constants {
             H_EFFECT_PORT = 0;
 
         public static final double
-            armSpdLmt = .3,
+            armSpdLmt = .5,
             motorSpdLmt = .7;
+
+        public static final int
+            encoderTolerance = 10,
+            encoderRaisedPosition = 0,
+            encoderLoweredPosition = 6377;
+
+        public static final double 
+            kP = 1,
+            kI = 0,
+            kD = 0;
+
+        public static final double
+            ksVolts = 0.0,
+            kgVolts = 0.0,
+            kvVoltSecondsPerRad = 0.0,
+            kaVoltSecondsSquaredPerRad = 0.0;
+
+        public static final double
+            kMaxSpeedRadPerSecond = 0.0,
+            kMaxAccelerationRadPerSecond = 0.0;
     }
 
     public static class UptakeConstants {
@@ -107,13 +145,13 @@ public final class Constants {
 
         public static final double
             uptakeMotorLmt = .9,
-            loadMotorLmt = .4;
+            loadMotorLmt = .5;
     }
 
     public static class ShooterConstants {
         public static final int SHOOTER_MOTOR_PIN = 9;
 
-        public static final double SHOOTER_HIGH_FIRING_SPEED = 11500.0;
+        public static final double SHOOTER_HIGH_FIRING_SPEED = 11100.0;
         public static final double SHOOTER_LOW_FIRING_SPEED = 6000.0;
 
         public static final int kPIDLoopIdx = 0;
@@ -154,7 +192,7 @@ public final class Constants {
         public static final int runUptakeButton = 2; // Right Button
         public static final int centerButton = 3; // Left Button
         public static final int spoolUpFire = 4; // Top Button
-        public static final int button5 = 5;
+        public static final int lockArmButton = 5;
         public static final int reverseIntakeButton = 6;
         public static final int spoolUpLowButton = 7;
         public static final int spoolUpHighButton = 8;

@@ -12,19 +12,17 @@ import frc.robot.subsystems.Shooter.shooterStates;
 
 public class TurretSpool extends CommandBase {
 
-  private final Uptake m_uptake;
   private final Shooter m_shooter;
   private double time;
 
   private shooterStates m_shooterState;
 
   /** Creates a new TurretSpool. */
-  public TurretSpool(Uptake uptake, Shooter shooter, shooterStates shooterState) {
+  public TurretSpool(Shooter shooter, shooterStates shooterState) {
 
-    m_uptake = uptake;
     m_shooter = shooter;
     m_shooterState = shooterState;
-    addRequirements(m_uptake, m_shooter);    
+    addRequirements(m_shooter);    
   }
 
   // Called when the command is initially scheduled.
@@ -39,22 +37,10 @@ public class TurretSpool extends CommandBase {
     
     if(m_shooterState == shooterStates.HIGH){
       m_shooter.spoolUpHigh();
-      if(m_shooter.timerReady(time, 1.5) && RobotContainer.getShooterButton()){
-        m_uptake.runLoader();
-        if(m_uptake.isCargoPresent()){
-          m_uptake.setUptakePower(.6);
-        }
-      }
     }
 
     if(m_shooterState == shooterStates.LOW){
       m_shooter.spoolUpLow();
-      if(m_shooter.timerReady(time, 1.5) && RobotContainer.getShooterButton()){
-          m_uptake.setUptakePower(.6);
-          if (m_uptake.isCargoPresent()){
-            m_uptake.runLoader();
-          } 
-      } 
     }
   }
 
@@ -65,6 +51,6 @@ public class TurretSpool extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_shooter.timerReady(time, 1.5);
   }
 }

@@ -21,6 +21,9 @@ public class AutonomousShoot extends CommandBase {
 
   private Integer m_maxMs;
 
+  private double time;
+
+  private boolean firstBall;
   private boolean secondBall;
   private boolean isDone;
 
@@ -32,12 +35,14 @@ public class AutonomousShoot extends CommandBase {
     m_uptake = uptake;
     m_shooterState = shooterState;
     m_maxMs = maxMs;
-    addRequirements(m_shooter);
+    addRequirements(m_shooter, m_uptake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    time = Timer.getFPGATimestamp();
+    firstBall = true;
     secondBall = false;
     isDone = false;
   }
@@ -45,45 +50,50 @@ public class AutonomousShoot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+
     Integer timeOut = 0;
+    
     if(m_shooterState == shooterStates.HIGH){
       m_shooter.spoolUpHigh();
-      while(!m_shooter.isShooterReadyHigh() && timeOut < m_maxMs){
+      if(!m_shooter.isShooterReadyHigh() && timeOut < m_maxMs){
         Timer.delay(0.001);
-        timeOut++;
-      }
-      if(timeOut < m_maxMs){
-        m_uptake.runLoader();
-        while(m_uptake.isCargoPresent()){
-          m_uptake.setUptakePower(.6);
+      } if(timeOut < m_maxMs && m_shooter.isShooterReadyHigh()){
+        m_uptake.runUptake();
+        if(m_uptake.isCargoPresent()){
+          m_uptake.runLoader();
         }
       }
-    } else{
+    } 
+    if (m_shooterState == shooterStates.LOW ){
       m_shooter.spoolUpLow();
-      while(!m_shooter.isShooterReadyLow()){
-        Timer.delay(0.001);
-        timeOut++;
-      }
-      SmartDashboard.putBoolean("Shooter Ready Low: ", m_shooter.isShooterReadyLow());
-      // SmartDashboard.putNumber("Timeout Value", timeOut);
-      SmartDashboard.putNumber("Max Timeout Value", m_maxMs);
-      SmartDashboard.putBoolean("Second Ball", secondBall);
-      SmartDashboard.putBoolean("Is Done", isDone);
-      // if(timeOut < maxMs){
-      SmartDashboard.putBoolean("Cargo is Present", m_uptake.isCargoPresent());
-      m_uptake.runLoader();
-      while(m_uptake.isCargoPresent()){
-        m_uptake.setUptakePower(.6);
+      if(m_shooter.timerReady(time, 1.5)){
+        m_uptake.runUptake();
+        if(m_uptake.isCargoPresent()){
+          m_uptake.runUptake();
+        }
       }
     }
-    // if(secondBall){
-    //   isDone = true;
-    // }
-    // while(!m_uptake.isCargoPresent()){
-    //   m_uptake.runUptake();
-    // }
-    secondBall = true;
+    /*if(firstBall){
+      if(!m_uptake.isCargoPresent()){
+        firstBall = false;
+      }
+    } else {
+      if(!secondBall && m_uptake.isCargoPresent()){
+        secondBall = true;
+      } else if(secondBall && !m_uptake.isCargoPresent()){
+        isDone = true;
+      }
+    }*/
+    if(!m_uptake.isCargoPresent() && secondBall){
+      isDone = true;
+    }
+    if(!m_uptake.isCargoPresent()){
+      m_uptake.runUptake();
+      firstBall = false;
+    }
+    if(m_uptake.isCargoPresent() && !firstBall){
+      secondBall = true;
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -101,6 +111,6 @@ public class AutonomousShoot extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return secondBall;
+    return isDone;
   }
 }

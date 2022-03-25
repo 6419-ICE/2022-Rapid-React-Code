@@ -6,42 +6,42 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Uptake;
 
-public class HandleUptake extends CommandBase {
+public class FireIfReady extends CommandBase {
+  /** Creates a new FireIfReady. */
+
+  private final Shooter m_shooter;
   private final Uptake m_uptake;
 
-  /** Creates a new HandleUptake. */
-  public HandleUptake(Uptake uptake) {
+  public FireIfReady(Shooter shooter, Uptake uptake) {
+    m_shooter = shooter;
     m_uptake = uptake;
-    addRequirements(m_uptake);
+    addRequirements(shooter, uptake);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_uptake.stopLoader();
-    m_uptake.stopUptake();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(RobotContainer.getReverseIntakeButton()){
-      m_uptake.reverseUptake();
-      m_uptake.reverseLoader();
-    }else if(RobotContainer.getRunIntakeButton() && !m_uptake.isCargoPresent()){
+    if(RobotContainer.getShooterButton()){
       m_uptake.runUptake();
-    } else {
-      m_uptake.stopUptake();
-      m_uptake.stopLoader();
+      if (m_uptake.isCargoPresent()){
+        m_uptake.runLoader();
+      } 
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_shooter.spoolDown();
     m_uptake.stopLoader();
     m_uptake.stopUptake();
   }

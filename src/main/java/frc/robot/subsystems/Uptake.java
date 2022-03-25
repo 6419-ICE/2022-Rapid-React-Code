@@ -59,11 +59,11 @@ public class Uptake extends SubsystemBase {
   }
 
   public void runUptake(){
-    uptakeMotor.set(ControlMode.PercentOutput, 1);
+    uptakeMotor.set(ControlMode.PercentOutput, .7);
   }
 
   public void reverseUptake(){
-    uptakeMotor.set(ControlMode.PercentOutput, -1);
+    uptakeMotor.set(ControlMode.PercentOutput, -.7);
   }
 
   public void stopUptake(){

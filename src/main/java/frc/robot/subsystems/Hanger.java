@@ -5,11 +5,13 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -43,6 +45,16 @@ public class Hanger extends SubsystemBase {
   public Hanger() {
     backClimberMotors[0].setInverted(false);
     backClimberMotors[1].setInverted(true);
+
+    backClimberMotors[0].configPeakCurrentLimit(35, 10);
+    backClimberMotors[0].configPeakCurrentDuration(1000, 10);
+    backClimberMotors[0].configContinuousCurrentLimit(30, 10);
+    backClimberMotors[0].enableCurrentLimit(true);
+    backClimberMotors[1].configPeakCurrentLimit(35, 10);
+    backClimberMotors[1].configPeakCurrentDuration(1000, 10);
+    backClimberMotors[1].configContinuousCurrentLimit(30, 10);
+    backClimberMotors[1].enableCurrentLimit(true);
+
     
     /*backClimberMotors[0].setNeutralMode(NeutralMode.Brake);
     backClimberMotors[1].setNeutralMode(NeutralMode.Brake);*/
@@ -80,6 +92,11 @@ public class Hanger extends SubsystemBase {
   public boolean getMagnetDigitalInput() {
     return !hEffectSensor.get();
   }
+  
+  public boolean timerReady(double init, double wait) {
+    double currentTime = Timer.getFPGATimestamp();
+    return currentTime > init + wait;
+  }
 
   @Override
   public void periodic() {
@@ -93,8 +110,8 @@ public class Hanger extends SubsystemBase {
     builder.addStringProperty("Arm State", this::returnHangerState, null);
 
     hangerStateChooser = new SendableChooser<>();
-    hangerStateChooser.setDefaultOption("Raised", hangerStates.RAISED);
-    hangerStateChooser.addOption("Lowered", hangerStates.LOWERED);
+    hangerStateChooser.addOption("Raised", hangerStates.RAISED);
+    hangerStateChooser.setDefaultOption("Lowered", hangerStates.LOWERED);
     hangerStateChooser.addOption("Raising", hangerStates.RAISING);
     hangerStateChooser.addOption("Lowering", hangerStates.LOWERING);
 
