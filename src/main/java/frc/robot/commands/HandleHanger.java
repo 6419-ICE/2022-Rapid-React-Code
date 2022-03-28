@@ -48,7 +48,7 @@ public class HandleHanger extends CommandBase {
       m_hanger.lowerHanger();
     }else {
       m_hanger.stopHanger();
-    }*/
+    }
     SmartDashboard.putBoolean("lower hanger", RobotContainer.getLowerHangerButton());
     SmartDashboard.putBoolean("raise hanger", RobotContainer.getRaiseHangerButton());
     
@@ -94,6 +94,29 @@ public class HandleHanger extends CommandBase {
 
     if(m_hanger.getCurrentHangerState() == hangerStates.RAISED && !m_hanger.getMagnetDigitalInput()){
       m_hanger.lowerHanger();
+    }*/
+
+    if(RobotContainer.getLowerHangerButton()){
+      //if(m_hanger.timerReady(timer, 1.5)){
+        m_hanger.lowerHanger();
+      //}
+    }
+    else {
+      timer = Timer.getFPGATimestamp();
+    }
+
+    
+    if(RobotContainer.getRaiseHangerButton()){
+      //if(m_hanger.timerReady(timer, 1.5)){
+        m_hanger.raiseHanger();
+      //}
+    }
+    else {
+      timer = Timer.getFPGATimestamp();
+    }
+
+    if(!RobotContainer.getLowerHangerButton() && !RobotContainer.getRaiseHangerButton()){
+      m_hanger.stopHanger();
     }
 
   }

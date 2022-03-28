@@ -50,10 +50,14 @@ public class AutonomousShoot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    Integer timeOut = 0;
     
     if(m_shooterState == shooterStates.HIGH){
       m_shooter.spoolUpHigh();
-      if(m_shooter.timerReady(time, 1.5)){
+      if(!m_shooter.isShooterReadyHigh() && timeOut < m_maxMs){
+        Timer.delay(0.001);
+      } if(timeOut < m_maxMs && m_shooter.isShooterReadyHigh()){
         m_uptake.runUptake();
         if(m_uptake.isCargoPresent()){
           m_uptake.runLoader();
@@ -84,7 +88,7 @@ public class AutonomousShoot extends CommandBase {
       isDone = true;
     }
     if(!m_uptake.isCargoPresent()){
-      //m_uptake.runUptake();
+      m_uptake.runUptake();
       firstBall = false;
     }
     if(m_uptake.isCargoPresent() && !firstBall){

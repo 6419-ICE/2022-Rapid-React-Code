@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -44,6 +45,16 @@ public class Hanger extends SubsystemBase {
   public Hanger() {
     backClimberMotors[0].setInverted(false);
     backClimberMotors[1].setInverted(true);
+
+    backClimberMotors[0].configPeakCurrentLimit(35, 10);
+    backClimberMotors[0].configPeakCurrentDuration(1000, 10);
+    backClimberMotors[0].configContinuousCurrentLimit(30, 10);
+    backClimberMotors[0].enableCurrentLimit(true);
+    backClimberMotors[1].configPeakCurrentLimit(35, 10);
+    backClimberMotors[1].configPeakCurrentDuration(1000, 10);
+    backClimberMotors[1].configContinuousCurrentLimit(30, 10);
+    backClimberMotors[1].enableCurrentLimit(true);
+
     
     /*backClimberMotors[0].setNeutralMode(NeutralMode.Brake);
     backClimberMotors[1].setNeutralMode(NeutralMode.Brake);*/

@@ -11,15 +11,15 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Shooter.shooterStates;
 
-public class TurretShoot extends CommandBase {
-  /** Creates a new TurretShoot. */
+public class TurretSpoolAndFire extends CommandBase {
+  /** Creates a new TurretSpoolAndFire. */
   private final Uptake m_uptake;
   private final Shooter m_shooter;
   private double time;
 
   private shooterStates m_shooterState;
 
-  public TurretShoot(Uptake uptake, Shooter shooter, shooterStates shooterState) {
+  public TurretSpoolAndFire(Uptake uptake, Shooter shooter, shooterStates shooterState) {
 
     m_uptake = uptake;
     m_shooter = shooter;
@@ -44,6 +44,8 @@ public class TurretShoot extends CommandBase {
         m_uptake.runUptake();
         if(m_uptake.isCargoPresent()){
           m_uptake.runLoader();
+        } else {
+          m_uptake.stopLoader();
         }
       }
     }
@@ -54,7 +56,9 @@ public class TurretShoot extends CommandBase {
           m_uptake.runUptake();
           if (m_uptake.isCargoPresent()){
             m_uptake.runLoader();
-          } 
+          } else {
+            m_uptake.stopLoader();
+          }
       } 
     }
   }

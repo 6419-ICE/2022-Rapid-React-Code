@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.TrajectoryPaths;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -21,10 +22,17 @@ public class TwoBallAuto extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       parallel(
+      parallel(
         new AutonomousMoveIntake(intake, armStates.LOWERING),
         new TrajectoryCommand(TrajectoryPaths.getTrajectoryTwoBalls(), driveTrain)
-      ),
-      new CenterAndFire(driveTrain, uptake, limelight, shooter, shooterStates.HIGH)
+      ).withTimeout(3),
+      sequence(
+        new WaitCommand(1),
+      new TurretSpoolAndFire(uptake, shooter, shooterStates.HIGH).withTimeout(6)
+      )
+      /*new AutonomousCenterOnGoal(driveTrain, limelight),
+      new AutonomousShoot(uptake, shooter, shooterStates.HIGH, 5000)*/
+      )
     );
   }
 }

@@ -21,7 +21,8 @@ public class CenterAndFire extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new CenterOnGoalPID(driveTrain, limelight).withTimeout(2),
-      new TurretShoot(uptake, shooter, shooterState).withTimeout(2)
+      new TurretSpoolAndFire(uptake, shooter, shooterState).withTimeout(4)
     );
   }
+
 }

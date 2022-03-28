@@ -25,7 +25,7 @@ public class CenterOnGoalPID extends CommandBase {
   public CenterOnGoalPID(DriveTrain driveTrain, Limelight limelight) {
     m_driveTrain = driveTrain;
     m_limelight = limelight;
-    addRequirements(m_driveTrain);
+    addRequirements(m_driveTrain, m_limelight);
   }
 
   // Called when the command is initially scheduled.

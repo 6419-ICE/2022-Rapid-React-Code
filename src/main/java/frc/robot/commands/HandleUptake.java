@@ -30,10 +30,12 @@ public class HandleUptake extends CommandBase {
   public void execute() {
     if(RobotContainer.getReverseIntakeButton()){
       m_uptake.reverseUptake();
+      m_uptake.reverseLoader();
     }else if(RobotContainer.getRunIntakeButton() && !m_uptake.isCargoPresent()){
       m_uptake.runUptake();
     } else {
       m_uptake.stopUptake();
+      m_uptake.stopLoader();
     }
   }
 

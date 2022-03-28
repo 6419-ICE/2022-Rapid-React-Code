@@ -82,8 +82,9 @@ public class RobotContainer {
     autoChooser.addOption("PID Turn", m_CenterOnGoalPID);
     autoChooser.addOption("Only Shoot", new AutonomousShoot(m_uptake, m_shooter, shooterStates.HIGH, 10000));
     autoChooser.addOption("Trajectory Attempt 2", new TrajectoryCommand(TrajectoryPaths.getTrajectoryAttempt(), m_driveTrain));
-    autoChooser.addOption("Trajectory Attempt", m_trajectoryAttempt);
+    autoChooser.addOption("Trajectory Attempt", new AutonomousMoveIntake(m_intake, armStates.LOWERED));
     autoChooser.addOption("Two Ball Auto", new TwoBallAuto(m_driveTrain, m_intake, m_uptake, m_shooter, m_limelight));
+    autoChooser.addOption("Four Ball Auto", new FourBallAuto(m_driveTrain, m_intake, m_uptake, m_shooter, m_limelight));
 
     SmartDashboard.putData("Autonomous", autoChooser);
   }
@@ -107,8 +108,8 @@ public class RobotContainer {
     JoystickButton spoolUpHighButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.spoolUpHighButton);
     JoystickButton centerOnGoalButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.centerButton);
 
-    shootLowButton.whenHeld(new TurretShoot(m_uptake, m_shooter, shooterStates.LOW), false);
-    shootHighButton.whenHeld(new TurretShoot(m_uptake, m_shooter, shooterStates.HIGH), false);
+    shootLowButton.whenHeld(new TurretSpoolAndFire(m_uptake, m_shooter, shooterStates.LOW), false);
+    shootHighButton.whenHeld(new TurretSpoolAndFire(m_uptake, m_shooter, shooterStates.HIGH), false);
     spoolUpLowButton.whenHeld(new SpoolUpFire(m_uptake, m_shooter, shooterStates.LOW), false);
     spoolUpHighButton.whenHeld(new SpoolUpFire(m_uptake, m_shooter, shooterStates.HIGH), false);
     centerOnGoalButton.whenHeld(new CenterAndFire(m_driveTrain, m_uptake, m_limelight, m_shooter, shooterStates.HIGH), false);
@@ -174,6 +175,10 @@ public class RobotContainer {
 
   public static boolean getCenterButton(){
     return mechanismJoystick.getRawButton(Constants.gamepadConstants.centerButton);
+  }
+
+  public static boolean getLockArmButton(){
+    return mechanismJoystick.getRawButton(Constants.gamepadConstants.lockArmButton);
   }
 
   public static double getDriveTrainForward(){

@@ -13,7 +13,7 @@ import frc.robot.subsystems.*;
 import frc.robot.subsystems.Shooter.shooterStates;
 
 public class NewCommand extends CommandBase {
-  /** Creates a new TurretShoot. */
+  /** Creates a new TurretSpoolAndFire. */
   private double time;
   public NewCommand(Shooter shooter, Intake intake, Uptake uptake) {
     addRequirements(shooter, intake, uptake);

@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Shooter.shooterStates;
 
@@ -18,7 +19,7 @@ public class SpoolUpFire extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new TurretSpool(shooter, shooterState),
-      new FireIfReady(shooter, uptake)
+      new TurretFire(shooter, uptake, RobotContainer::getShooterButton)
     );
   }
 }

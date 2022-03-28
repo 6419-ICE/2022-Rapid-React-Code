@@ -55,7 +55,7 @@ public class TrajectoryCommand extends RamseteCommand {
   @Override
   public void initialize() {
     m_drive.setMaxMotorSpeed(Constants.DrivetrainConstants.speedLmt);
-    m_drive.resetHeading();
+    //m_drive.resetHeading();
     m_drive.resetOdometry(trajectory.getInitialPose());
     super.initialize();
   }

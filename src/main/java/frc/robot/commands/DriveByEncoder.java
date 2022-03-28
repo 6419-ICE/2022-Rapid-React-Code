@@ -40,7 +40,7 @@ public class DriveByEncoder extends CommandBase {
 
     m_driveTrain.resetHeading();
     m_driveTrain.setHeadingTarget(0);
-    m_driveTrain.setDriveSetpoints(distance, distance);
+    m_driveTrain.setDriveSetpoints(distance);
     SmartDashboard.putNumber("distance", distance);
 
 }
