@@ -27,23 +27,18 @@ public class FourBallAuto extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());paths/output/%s.wpilib.jsonpaths/output/
     addCommands(
       parallel(
+        new AutonomousMoveIntake(intake, uptake, armStates.RAISED, uptake::isUptakeFull, 0),
+    sequence(
+      new WaitCommand(.5),
+      parallel(
         new TrajectoryCommand(TrajectoryPaths.getTrajectoryFromPath("paths/output/start-to-firstball.wpilib.json"), driveTrain),
-        new AutonomousMoveIntake(intake, armStates.RAISED),
         new TurretSpool(shooter, shooterStates.HIGH)
-      ),
+      ))),
       new TurretFire(shooter, uptake).withTimeout(2.5),
       //new WaitCommand(2.5),
       parallel(new TrajectoryCommand(TrajectoryPaths.getTrajectoryFromPath("paths/output/firstball-to-terminal.wpilib.json"), driveTrain),
-      new RunCommand(() -> {if(Math.abs(intake.getArmAbsPos())-Math.abs(Constants.IntakeConstants.encoderLoweredPosition) > 500){
-        intake.raiseIntakeArm();
-    
-      }else if(Math.abs(Constants.IntakeConstants.encoderLoweredPosition)-Math.abs(intake.getArmAbsPos()) > 500){
-        intake.lowerIntakeArm();
-      }else{
-        intake.stopIntakeArm();
-      }  }, intake).withTimeout(3)
+      new AutonomousMoveIntake(intake, uptake, armStates.RAISED, uptake::isUptakeFull, Constants.IntakeConstants.encoderLoweredPosition).withTimeout(3.5)
       ),
-      new RunCommand(() -> {intake.runIntakeMotor(); uptake.runUptake();}, intake, uptake).withTimeout(2),
       parallel(
         new TrajectoryCommand(TrajectoryPaths.getTrajectoryFromPath("paths/output/terminal-to-firstball.wpilib.json"), driveTrain),
         new TurretSpool(shooter, shooterStates.HIGH)

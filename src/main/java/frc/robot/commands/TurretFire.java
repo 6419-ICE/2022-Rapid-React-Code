@@ -17,8 +17,10 @@ public class TurretFire extends CommandBase {
 
   private final Shooter m_shooter;
   private final Uptake m_uptake;
+  public boolean lastLoaderState;
 
   private BooleanSupplier m_condition;
+  private int count;
 
   public TurretFire(Shooter shooter, Uptake uptake, BooleanSupplier condition) {
     m_shooter = shooter;
@@ -37,7 +39,10 @@ public class TurretFire extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    lastLoaderState = m_uptake.isCargoPresentTop();
+    count = 0;
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -45,7 +50,7 @@ public class TurretFire extends CommandBase {
     if(m_condition != null){
       if(m_condition.getAsBoolean()){
         m_uptake.runUptake();
-        if (m_uptake.isCargoPresent()){
+        if (m_uptake.isCargoPresentTop()){
           m_uptake.runLoader();
         }else {
           m_uptake.stopLoader();
@@ -56,11 +61,18 @@ public class TurretFire extends CommandBase {
       }
     } else {
       m_uptake.runUptake();
-      if (m_uptake.isCargoPresent()){
+      if (m_uptake.isCargoPresentTop()){
         m_uptake.runLoader();
       }else {
         m_uptake.stopLoader();
       }
+    }
+
+    if(lastLoaderState && !m_uptake.isCargoPresentTop()){
+      count++;
+    }
+    if(lastLoaderState != m_uptake.isCargoPresentTop()){
+      lastLoaderState = m_uptake.isCargoPresentTop();
     }
   }
 
@@ -75,6 +87,6 @@ public class TurretFire extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return count >= 2;
   }
 }

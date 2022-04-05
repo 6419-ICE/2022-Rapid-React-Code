@@ -23,7 +23,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
     addCommands(
       parallel(
       parallel(
-        new AutonomousMoveIntake(intake, armStates.LOWERING),
+        //new AutonomousMoveIntake(intake, armStates.LOWERING),
         new TrajectoryCommand(TrajectoryPaths.getTrajectoryTwoBalls(), driveTrain)
       ).withTimeout(3),
       sequence(

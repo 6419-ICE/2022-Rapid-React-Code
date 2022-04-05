@@ -31,7 +31,7 @@ public class HandleUptake extends CommandBase {
     if(RobotContainer.getReverseIntakeButton()){
       m_uptake.reverseUptake();
       m_uptake.reverseLoader();
-    }else if(RobotContainer.getRunIntakeButton() && !m_uptake.isCargoPresent()){
+    }else if(RobotContainer.getRunIntakeButton() && !(m_uptake.isCargoPresentTop() && m_uptake.isCargoPresentBottom())){
       m_uptake.runUptake();
     } else {
       m_uptake.stopUptake();

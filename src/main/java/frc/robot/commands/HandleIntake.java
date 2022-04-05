@@ -4,6 +4,10 @@
 
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,11 +26,13 @@ public class HandleIntake extends CommandBase {
 
   private boolean sensorState;
   private boolean isMoving;
+  private BooleanSupplier m_supplier;
   private int setPosition;
 
   /** Creates a new HandleIntake. */
-  public HandleIntake(Intake intake) {
+  public HandleIntake(Intake intake, BooleanSupplier supplier) {
     m_intake = intake;
+    m_supplier = supplier;
     addRequirements(m_intake);
   }
 
@@ -38,7 +44,7 @@ public class HandleIntake extends CommandBase {
     if(m_intake.getCurrentArmState() == null){
       m_intake.setArmState(m_intake.getSelectedArmState());
     }
-    setPosition = m_intake.getArmAbsPos();
+    setPosition = m_intake.getArmRelPos();
     sensorState = m_intake.getMagnetDigitalInput();
     isMoving = false;
 
@@ -69,24 +75,19 @@ public class HandleIntake extends CommandBase {
       } else {
         if(isMoving){
           isMoving = false;
-          setPosition = m_intake.getArmAbsPos();
+          setPosition = m_intake.getArmRelPos();
         }
         m_intake.stopIntakeArm();
       }
       
       if(RobotContainer.getLockArmButton()){
-        m_intake.resetArmAbsPos();
+        m_intake.resetArmRelPos();
       }
       if(!isMoving){
-      if(Math.abs(m_intake.getArmAbsPos())-Math.abs(setPosition) < -500){
+      if(Math.abs(m_intake.getArmRelPos())-Math.abs(setPosition) < -500){
         m_intake.lowerIntakeArm();
-
-
-      }else if(Math.abs(setPosition)-Math.abs(m_intake.getArmAbsPos()) > 500){
+      }else if(Math.abs(setPosition)-Math.abs(m_intake.getArmRelPos()) > 500){
         m_intake.raiseIntakeArm();
-
-
-
       }else{
         m_intake.stopIntakeArm();
       }
@@ -128,14 +129,81 @@ public class HandleIntake extends CommandBase {
       if(m_intake.getCurrentArmState() == armStates.RAISED && !m_intake.getMagnetDigitalInput()){
         m_intake.lowerIntakeArm();
       }
-    }else if(m_intake.getCurrentArmMode() == armModes.ENCODER){
+    }
+    if(m_intake.getSelectedArmMode() == armModes.ENCODER){
       /*if(RobotContainer.getRaiseIntakeButton()){
         m_intake.setGoal(Constants.IntakeConstants.encoderRaisedPosition);
       } else if (RobotContainer.getLowerIntakeButton()){
         m_intake.setGoal(Constants.IntakeConstants.encoderLoweredPosition);
       }*/
-    }
-    SmartDashboard.putNumber("setpoint", setPosition);
+
+      if(m_supplier.getAsBoolean()){
+        m_intake.setArmState(armStates.RAISED);
+      }else{
+        m_intake.setArmState(armStates.LOWERED);
+      }
+
+      if((m_intake.getCurrentArmState() == armStates.RAISED && RobotContainer.getLowerIntakeButton())){
+        m_intake.setArmState(armStates.LOWERED);
+      } else if(m_intake.getCurrentArmState() == armStates.LOWERED && RobotContainer.getRaiseIntakeButton()){
+        m_intake.setArmState(armStates.RAISED);
+      }
+
+      if(m_intake.getCurrentArmState() == armStates.LOWERED && m_intake.isArmBelowLowered()){
+        m_intake.setIntakeArmPower(-.4); 
+
+      if(m_intake.isArmBelowLoweredSlow()){
+        m_intake.raiseIntakeArm();
+
+        }
+      } else if (m_intake.getCurrentArmState() == armStates.LOWERED && m_intake.isArmAboveLowered()){
+        m_intake.setIntakeArmPower(.6); 
+
+      if(m_intake.isArmAboveLoweredSlow()){
+        m_intake.lowerIntakeArm();
+
+        }
+      } else {
+        m_intake.stopIntakeArm();
+      }
+
+      if(m_intake.getCurrentArmState() == armStates.RAISED && m_intake.isArmBelowRaised()){
+        m_intake.setIntakeArmPower(-.6); 
+
+      if(m_intake.isArmBelowRaisedSlow()){
+        m_intake.raiseIntakeArm();
+
+        }
+      } else if (m_intake.getCurrentArmState() == armStates.RAISED && m_intake.isArmAboveRaised()){
+        m_intake.setIntakeArmPower(.6); 
+
+      if(m_intake.isArmAboveRaisedSlow()){
+        m_intake.lowerIntakeArm();
+
+        }
+      } 
+
+      if(RobotContainer.getLockArmButton()){
+        m_intake.setArmState(armStates.HOMING);
+      }
+
+      if(m_intake.getCurrentArmState() == armStates.HOMING && !m_intake.isArmAboveRaised()){
+        m_intake.raiseIntakeArm();
+      }else if(m_intake.getCurrentArmState() == armStates.HOMING && m_intake.isArmAboveRaised()){
+        m_intake.setIntakeArmPower(-.6);
+      }
+
+
+      if(m_intake.getLmtSwitchInput() && (m_intake.getCurrentArmState() == armStates.RAISED || m_intake.getCurrentArmState() == armStates.HOMING)){
+        m_intake.stopIntakeArm();
+        if(m_intake.getCurrentArmState() == armStates.HOMING){
+          m_intake.setArmState(armStates.RAISED);
+        m_intake.resetArmRelPos();
+        }
+
+      }
+
+    }      
   }
 
   // Called once the command ends or is interrupted.

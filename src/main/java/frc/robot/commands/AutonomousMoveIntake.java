@@ -4,25 +4,34 @@
 
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Uptake;
 import frc.robot.subsystems.Intake.armStates;
 
 
 public class AutonomousMoveIntake extends CommandBase {
 
   private final Intake m_intake;
+  private final Uptake m_uptake;
 
   private boolean sensorState;
+  private BooleanSupplier m_supplier;
+  private int m_pos;
 
   private armStates m_armState;
 
   /** Creates a new LowerIntakeAuto. */
-  public AutonomousMoveIntake(Intake intake, armStates armState) {
+  public AutonomousMoveIntake(Intake intake, Uptake uptake, armStates armState, BooleanSupplier supplier, int position) {
     m_intake = intake;
+    m_uptake = uptake;
     m_armState = armState;
+    m_supplier = supplier;
+    m_pos = position;
     addRequirements(m_intake);
   }
 
@@ -31,13 +40,14 @@ public class AutonomousMoveIntake extends CommandBase {
   public void initialize() {
     m_intake.stopIntakeArm();
     m_intake.setArmState(m_armState);
-    m_intake.resetArmAbsPos();
+    m_intake.setArmRelPos(-m_pos);
     sensorState = m_intake.getMagnetDigitalInput();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_uptake.runUptake();
     m_intake.runIntakeMotor();/*
    if(m_intake.getCurrentArmState() == armStates.RAISING){
      if(sensorState && !m_intake.getMagnetDigitalInput()){
@@ -60,27 +70,37 @@ public class AutonomousMoveIntake extends CommandBase {
    } else {
      m_intake.stopIntakeArm();
    }*/
-   if(Math.abs(m_intake.getArmAbsPos())-Math.abs(Constants.IntakeConstants.encoderLoweredPosition) > 500){
+   if( m_intake.isArmBelowLowered()){
+    m_intake.setIntakeArmPower(-.4); 
+
+  if(m_intake.isArmBelowLoweredSlow()){
     m_intake.raiseIntakeArm();
 
-  }else if(Math.abs(Constants.IntakeConstants.encoderLoweredPosition)-Math.abs(m_intake.getArmAbsPos()) > 500){
+    }
+  } else if (m_intake.isArmAboveLowered()){
+    m_intake.setIntakeArmPower(.6); 
+
+  if(m_intake.isArmAboveLoweredSlow()){
     m_intake.lowerIntakeArm();
-  }else{
+
+    }
+  } else {
     m_intake.stopIntakeArm();
-  }  
+  }
 }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_intake.stopIntakeArm();
+    //m_uptake.stopUptake();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     //return false;
-    return (Math.abs(Constants.IntakeConstants.encoderLoweredPosition)-Math.abs(m_intake.getArmAbsPos()) < 500);//(m_intake.getCurrentArmState() == armStates.LOWERED) || (m_intake.getCurrentArmState() == armStates.RAISED);
+    return m_supplier.getAsBoolean();//(!m_intake.isArmBelowLowered() && !m_intake.isArmAboveLowered());//(m_intake.getCurrentArmState() == armStates.LOWERED) || (m_intake.getCurrentArmState() == armStates.RAISED);
   }
 }
 

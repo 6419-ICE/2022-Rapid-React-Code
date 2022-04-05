@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,13 +28,15 @@ public class Intake extends SubsystemBase {
   private final WPI_TalonSRX intakeMotor = new WPI_TalonSRX(Constants.IntakeConstants.INTAKE_MOTOR_PIN);
 
   private final DigitalInput hEffectSensor = new DigitalInput(Constants.IntakeConstants.H_EFFECT_PORT);
+  private final DigitalInput LmtSwitch = new DigitalInput(Constants.IntakeConstants.LMT_SWITCH_PORT);
   private final SensorCollection intakeArmSensor;
 
   public static enum armStates {
     RAISED,
     LOWERED,
     RAISING,
-    LOWERING
+    LOWERING,
+    HOMING
   };
 
   private armStates armState;
@@ -96,11 +99,11 @@ public class Intake extends SubsystemBase {
   }
 
   public void raiseIntakeArm(){
-    intakeArm.set(ControlMode.PercentOutput, -1 * Constants.IntakeConstants.armSpdLmt);
+    intakeArm.set(ControlMode.PercentOutput, -1);
   }
 
   public void lowerIntakeArm() {
-    intakeArm.set(ControlMode.PercentOutput, .6 * Constants.IntakeConstants.armSpdLmt);
+    intakeArm.set(ControlMode.PercentOutput, 1);
   }
 
   public void stopIntakeArm(){
@@ -127,14 +130,46 @@ public class Intake extends SubsystemBase {
     intakeArmSensor.setPulseWidthPosition(0, 30);
   }
 
-  public boolean isArmRaised(){
-    return Math.abs(this.getArmAbsPos()-Constants.IntakeConstants.encoderRaisedPosition) < Constants.IntakeConstants.encoderTolerance;
+  public boolean isArmBelowLowered(){
+    return  this.getArmRelPos() > Constants.IntakeConstants.encoderLoweredPosition + Constants.IntakeConstants.encoderTolerance;
+  }
+
+  public boolean isArmAboveLowered(){
+    return  this.getArmRelPos() < Constants.IntakeConstants.encoderLoweredPosition - Constants.IntakeConstants.encoderTolerance;
+  }
+
+  public boolean isArmBelowRaised(){
+    return  this.getArmRelPos() > Constants.IntakeConstants.encoderRaisedPosition + Constants.IntakeConstants.encoderTolerance;
+  }
+
+  public boolean isArmAboveRaised(){
+    return  this.getArmRelPos() < Constants.IntakeConstants.encoderRaisedPosition - Constants.IntakeConstants.encoderTolerance;
+  }
+  
+  public boolean isArmBelowLoweredSlow(){
+    return  this.getArmRelPos() > Constants.IntakeConstants.encoderLoweredPosition + 500;
+  }
+
+  public boolean isArmAboveLoweredSlow(){
+    return  this.getArmRelPos() < Constants.IntakeConstants.encoderLoweredPosition - 500;
+  }
+
+  public boolean isArmBelowRaisedSlow(){
+    return  this.getArmRelPos() > Constants.IntakeConstants.encoderRaisedPosition + 500;
+  }
+
+  public boolean isArmAboveRaisedSlow(){
+    return  this.getArmRelPos() < Constants.IntakeConstants.encoderRaisedPosition - 500;
   }
 
   //Intake arm hall effect sensor functions
 
   public boolean getMagnetDigitalInput() {
     return !hEffectSensor.get();
+  }
+
+  public boolean getLmtSwitchInput(){
+    return !LmtSwitch.get();
   }
 
   public armStates getCurrentArmState() {
@@ -172,7 +207,11 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    
+    //SmartDashboard.putString("arm mode", this.getSelectedArmMode().toString());
+
+    SmartDashboard.putNumber("armPos", this.getArmRelPos());
+    SmartDashboard.putBoolean("limit switch", this.getLmtSwitchInput());
+    //SmartDashboard.putString("armState", this.getCurrentArmState().toString());
   }
 
   @Override
@@ -187,6 +226,7 @@ public class Intake extends SubsystemBase {
     armStateChooser.addOption("Lowered", armStates.LOWERED);
     armStateChooser.addOption("Raising", armStates.RAISING);
     armStateChooser.addOption("Lowering", armStates.LOWERING);
+    armStateChooser.addOption("HOMING", armStates.HOMING);
 
     SmartDashboard.putData("Arm State", armStateChooser);
 
@@ -196,6 +236,7 @@ public class Intake extends SubsystemBase {
     armModeChooser.addOption("Encoder", armModes.ENCODER);
 
     SmartDashboard.putData("Arm Mode", armModeChooser);
+
     
     super.initSendable(builder);
   }

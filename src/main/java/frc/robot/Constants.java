@@ -94,8 +94,8 @@ public final class Constants {
             kTrackWidthMeters = .5;
 
         public static final double 
-            kMaxSpeedMetersPerSecond = 3,
-            kMaxAccelerationMetersPerSecond = .75;
+            kMaxSpeedMetersPerSecond = 5,
+            kMaxAccelerationMetersPerSecond = 1.25;
 
         public static final DifferentialDriveKinematics 
             m_driveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
@@ -116,15 +116,17 @@ public final class Constants {
             INTAKE_MOTOR_PIN = 6;
         
         public static final int
-            H_EFFECT_PORT = 0;
+            H_EFFECT_PORT = 0,
+            LMT_SWITCH_PORT = 2;
+            
 
         public static final double
-            armSpdLmt = .5,
-            motorSpdLmt = .7;
+            armSpdLmt = .4,
+            motorSpdLmt = 1;
 
         public static final int
-            encoderTolerance = 10,
-            encoderRaisedPosition = 0,
+            encoderTolerance = 60,
+            encoderRaisedPosition = 1000,
             encoderLoweredPosition = 5000;
 
         public static final double 
@@ -149,7 +151,8 @@ public final class Constants {
             LOADER_MOTOR_PIN = 8;
 
         public static final int
-            LOAD_SENSOR_PORT = 1;
+            LOAD_SENSOR_PORT_1 = 1,
+            LOAD_SENSOR_PORT_2 = 4;
 
         public static final double
             uptakeMotorLmt = .9,
@@ -176,7 +179,7 @@ public final class Constants {
         public static final int BACK_CLIMBER_ONE_PIN = 10;
         public static final int BACK_CLIMBER_TWO_PIN = 11;
 
-        public static final int H_EFFECT_PORT = 2;
+        public static final int H_EFFECT_PORT = 3;
 
         public static final double hangerSpeedLmt = .5;
     }

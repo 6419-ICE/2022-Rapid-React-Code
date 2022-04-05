@@ -50,7 +50,10 @@ public class AutonomousShoot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
+    // SmartDashboard.putBoolean("isDone", isDone);
+    // SmartDashboard.putBoolean("firstBall", firstBall);
+    // SmartDashboard.putBoolean("secondBall", secondBall);
+    SmartDashboard.putNumber("Shooter Speed", m_shooter.getShooterSpeed());
     Integer timeOut = 0;
     
     if(m_shooterState == shooterStates.HIGH){
@@ -59,7 +62,7 @@ public class AutonomousShoot extends CommandBase {
         Timer.delay(0.001);
       } if(timeOut < m_maxMs && m_shooter.isShooterReadyHigh()){
         m_uptake.runUptake();
-        if(m_uptake.isCargoPresent()){
+        if(m_uptake.isCargoPresentTop()){
           m_uptake.runLoader();
         }
       }
@@ -68,30 +71,30 @@ public class AutonomousShoot extends CommandBase {
       m_shooter.spoolUpLow();
       if(m_shooter.timerReady(time, 1.5)){
         m_uptake.runUptake();
-        if(m_uptake.isCargoPresent()){
+        if(m_uptake.isCargoPresentTop()){
           m_uptake.runUptake();
         }
       }
     }
     /*if(firstBall){
-      if(!m_uptake.isCargoPresent()){
+      if(!m_uptake.isCargoPresentTop()){
         firstBall = false;
       }
     } else {
-      if(!secondBall && m_uptake.isCargoPresent()){
+      if(!secondBall && m_uptake.isCargoPresentTop()){
         secondBall = true;
-      } else if(secondBall && !m_uptake.isCargoPresent()){
+      } else if(secondBall && !m_uptake.isCargoPresentTop()){
         isDone = true;
       }
     }*/
-    if(!m_uptake.isCargoPresent() && secondBall){
+    if(!m_uptake.isCargoPresentTop() && secondBall){
       isDone = true;
     }
-    if(!m_uptake.isCargoPresent()){
+    if(!m_uptake.isCargoPresentTop()){
       m_uptake.runUptake();
       firstBall = false;
     }
-    if(m_uptake.isCargoPresent() && !firstBall){
+    if(m_uptake.isCargoPresentTop() && !firstBall){
       secondBall = true;
     }
   }

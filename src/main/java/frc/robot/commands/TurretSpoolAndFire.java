@@ -42,7 +42,7 @@ public class TurretSpoolAndFire extends CommandBase {
       m_shooter.spoolUpHigh();
       if(m_shooter.timerReady(time, 1.5)){
         m_uptake.runUptake();
-        if(m_uptake.isCargoPresent()){
+        if(m_uptake.isCargoPresentTop()){
           m_uptake.runLoader();
         } else {
           m_uptake.stopLoader();
@@ -54,7 +54,7 @@ public class TurretSpoolAndFire extends CommandBase {
       m_shooter.spoolUpLow();
       if(m_shooter.timerReady(time, 1.5)){
           m_uptake.runUptake();
-          if (m_uptake.isCargoPresent()){
+          if (m_uptake.isCargoPresentTop()){
             m_uptake.runLoader();
           } else {
             m_uptake.stopLoader();

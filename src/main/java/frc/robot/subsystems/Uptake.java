@@ -21,7 +21,8 @@ public class Uptake extends SubsystemBase {
   private final TalonSRX uptakeMotor = new TalonSRX(Constants.UptakeConstants.UPTAKE_MOTOR_PIN);
   private final CANSparkMax loaderMotor = new CANSparkMax(Constants.UptakeConstants.LOADER_MOTOR_PIN,  CANSparkMaxLowLevel.MotorType.kBrushless);
 
-  private final DigitalInput loadSensor = new DigitalInput(Constants.UptakeConstants.LOAD_SENSOR_PORT);
+  private final DigitalInput loadSensorTop = new DigitalInput(Constants.UptakeConstants.LOAD_SENSOR_PORT_1);
+  private final DigitalInput loadSensorBottom = new DigitalInput(Constants.UptakeConstants.LOAD_SENSOR_PORT_2);
 
   public Uptake() {
     uptakeMotor.setNeutralMode(NeutralMode.Brake);
@@ -59,11 +60,11 @@ public class Uptake extends SubsystemBase {
   }
 
   public void runUptake(){
-    uptakeMotor.set(ControlMode.PercentOutput, .7);
+    uptakeMotor.set(ControlMode.PercentOutput, 1);
   }
 
   public void reverseUptake(){
-    uptakeMotor.set(ControlMode.PercentOutput, -.7);
+    uptakeMotor.set(ControlMode.PercentOutput, -1);
   }
 
   public void stopUptake(){
@@ -71,7 +72,14 @@ public class Uptake extends SubsystemBase {
   }
 
 
-  public boolean isCargoPresent() {
-    return !loadSensor.get();
+  public boolean isCargoPresentTop() {
+    return !loadSensorTop.get();
+
+  }  public boolean isCargoPresentBottom() {
+    return !loadSensorBottom.get();
+  }
+
+  public boolean isUptakeFull(){
+    return isCargoPresentTop() && isCargoPresentBottom();
   }
 }

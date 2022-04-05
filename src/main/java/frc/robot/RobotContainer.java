@@ -43,7 +43,7 @@ public class RobotContainer {
   private TrajectoryPaths m_paths = new TrajectoryPaths(m_driveTrain);
 
   private final HandleDriveTrain m_handleDriveTrain = new HandleDriveTrain(m_driveTrain);
-  private final HandleIntake m_handleIntake = new HandleIntake(m_intake);
+  private final HandleIntake m_handleIntake = new HandleIntake(m_intake, m_uptake::isUptakeFull);
   private final HandleUptake m_handleUptake = new HandleUptake(m_uptake);
   private final HandleShooter m_handleShooter = new HandleShooter(m_shooter);
   private final HandleHanger m_handleHanger = new HandleHanger(m_hanger);
@@ -82,7 +82,7 @@ public class RobotContainer {
     autoChooser.addOption("PID Turn", m_CenterOnGoalPID);
     autoChooser.addOption("Only Shoot", new AutonomousShoot(m_uptake, m_shooter, shooterStates.HIGH, 10000));
     autoChooser.addOption("Trajectory Attempt 2", new TrajectoryCommand(TrajectoryPaths.getTrajectoryAttempt(), m_driveTrain));
-    autoChooser.addOption("Trajectory Attempt", new AutonomousMoveIntake(m_intake, armStates.LOWERED));
+   // autoChooser.addOption("Trajectory Attempt", new AutonomousMoveIntake(m_intake, armStates.LOWERED));
     autoChooser.addOption("Two Ball Auto", new TwoBallAuto(m_driveTrain, m_intake, m_uptake, m_shooter, m_limelight));
     autoChooser.addOption("Four Ball Auto", new FourBallAuto(m_driveTrain, m_intake, m_uptake, m_shooter, m_limelight));
 

@@ -59,7 +59,7 @@ public class HandleDriveTrain extends CommandBase {
     turn = m_turnLimiter.calculate(Math.copySign(Math.abs(Math.pow(turn, 2)), turn));
     /*power = Math.copySign(Math.abs(Math.pow(power, 2)), power) * Constants.DrivetrainConstants.speedLmt;
     turn = Math.copySign(Math.abs(Math.pow(turn, 2)), turn) * Constants.DrivetrainConstants.speedLmt;*/
-    m_driveTrain.arcadeDrive(power, turn);
+    m_driveTrain.arcadeDrive(power, turn * .6);
     SmartDashboard.putNumber("Left Encoder Distance", m_driveTrain.getLeftDriveEncoderDistance());
     SmartDashboard.putNumber("Right Encoder Distance", m_driveTrain.getRightDriveEncoderDistance());
   }
