@@ -211,6 +211,17 @@ public class DriveTrain extends SubsystemBase {
 
   }
 
+  public void setMinMotorSpeed(double speed) {
+    m_leftMotors[0].configNominalOutputForward(speed);
+    m_leftMotors[0].configNominalOutputReverse(-speed);
+    m_rightMotors[0].configNominalOutputForward(speed);
+    m_rightMotors[0].configNominalOutputReverse(-speed);
+    m_leftMotors[1].configNominalOutputForward(speed);
+    m_leftMotors[1].configNominalOutputReverse(-speed);
+    m_rightMotors[1].configNominalOutputForward(speed);
+    m_rightMotors[1].configNominalOutputReverse(-speed);
+  }
+
   public void setMotorNeutralMode(NeutralMode neutralMode){
     m_leftMotors[0].setNeutralMode(neutralMode);
     m_leftMotors[1].setNeutralMode(neutralMode);

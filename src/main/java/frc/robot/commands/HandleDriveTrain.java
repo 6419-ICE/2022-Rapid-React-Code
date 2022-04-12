@@ -55,7 +55,6 @@ public class HandleDriveTrain extends CommandBase {
   public void execute() {
     double power = RobotContainer.getDriveTrainForward();
     double turn = RobotContainer.getDriveTrainTurn();
-
     power = m_fwdLimiter.calculate(Math.copySign(Math.abs(Math.pow(power, 2)), power));
     turn = m_turnLimiter.calculate(Math.copySign(Math.abs(Math.pow(turn, 2)), turn));
     /*power = Math.copySign(Math.abs(Math.pow(power, 2)), power) * Constants.DrivetrainConstants.speedLmt;

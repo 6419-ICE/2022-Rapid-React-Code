@@ -362,7 +362,7 @@ public class Intake extends TrapezoidProfileSubsystem {
   }
 
   public void lowerIntakeArm() {
-    intakeArm.set(ControlMode.PercentOutput, 1 * Constants.IntakeConstants.armSpdLmt);
+    intakeArm.set(ControlMode.PercentOutput, .6 * Constants.IntakeConstants.armSpdLmt);
   }
 
   public void stopIntakeArm(){
@@ -434,6 +434,7 @@ public class Intake extends TrapezoidProfileSubsystem {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    
   }
 
   @Override

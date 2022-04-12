@@ -189,6 +189,10 @@ public class RobotContainer {
     return gamepadController.getRawButton(5);
   }
 
+  public static boolean getLockArmButton(){
+    return mechanismJoystick.getRawButton(Constants.gamepadConstants.lockArmButton);
+  }
+
   public static double getDriveTrainForward(){
     return Utilities.applyDeadband(-gamepadController.getRawAxis(Constants.gamepadConstants.kGamepadAxisLeftStickY), 0.01);
   }
