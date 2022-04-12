@@ -4,8 +4,11 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Uptake;
@@ -16,12 +19,16 @@ import frc.robot.subsystems.Shooter.shooterStates;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class CenterAndFire extends SequentialCommandGroup {
   /** Creates a new CenterAndFire. */
-  public CenterAndFire(DriveTrain driveTrain, Uptake uptake, Limelight limelight, Shooter shooter, shooterStates shooterState) {
+  public CenterAndFire(DriveTrain driveTrain, Uptake uptake, Intake intake, Limelight limelight) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new CenterOnGoalPID(driveTrain, limelight).withTimeout(2),
-      new TurretSpoolAndFire(uptake, shooter, shooterState).withTimeout(4)
+      //parallel(
+      new RunCommand(() -> {driveTrain.arcadeDrive(.5, 0);}, driveTrain)
+      //new RunIntake(intake, uptake)
+      //)
+      //new TurretSpoolAndFire(uptake, shooter, shooterState).withTimeout(4)
     );
   }
 

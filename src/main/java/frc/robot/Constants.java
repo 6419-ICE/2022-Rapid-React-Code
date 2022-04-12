@@ -19,7 +19,7 @@ public final class Constants {
     //Constants for the drive train
     public static class DrivetrainConstants{
         //Universal motor speed limit
-        public static final double speedLmt = .49;
+        public static final double speedLmt = .6;
         public static final double autoSpeedLmt = .8;
         public static final double driveFwdAccelLmt = 1.5;
         public static final double driveTurnAccelLmt = 4;
@@ -94,8 +94,11 @@ public final class Constants {
             kTrackWidthMeters = .5;
 
         public static final double 
-            kMaxSpeedMetersPerSecond = 5,
-            kMaxAccelerationMetersPerSecond = 1.25;
+            kMaxSpeedMetersPerSecond = 3,
+            kMaxAccelerationMetersPerSecond = .75
+            
+            
+            ;
 
         public static final DifferentialDriveKinematics 
             m_driveKinematics = new DifferentialDriveKinematics(kTrackWidthMeters);
@@ -127,7 +130,10 @@ public final class Constants {
         public static final int
             encoderTolerance = 60,
             encoderRaisedPosition = 1000,
-            encoderLoweredPosition = 5000;
+            encoderLoweredPosition = 5250;
+
+        public static final double
+            TimerThreshold = 1.8;
 
         public static final double 
             kP = 1,
@@ -167,6 +173,7 @@ public final class Constants {
 
         public static final int kPIDLoopIdx = 0;
         public static final int kTimeoutMs = 30;
+        public static final double shootTimer = 1;
 
         public static final double kP = 0.3;
         public static final double kI = 0;
@@ -201,7 +208,7 @@ public final class Constants {
         // Gamepad 2 buttons
         public static final int runIntakeButton = 1; // Bottom Button
         public static final int runUptakeButton = 2; // Right Button
-        public static final int centerButton = 3; // Left Button
+        public static final int manualSwitchButton = 3; // Left Button
         public static final int spoolUpFire = 4; // Top Button
         public static final int lockArmButton = 5;
         public static final int reverseIntakeButton = 6;

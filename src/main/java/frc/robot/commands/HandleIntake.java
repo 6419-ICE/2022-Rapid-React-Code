@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -28,6 +29,8 @@ public class HandleIntake extends CommandBase {
   private boolean isMoving;
   private BooleanSupplier m_supplier;
   private int setPosition;
+  private double TimerCount;
+  private double initTime;
 
   /** Creates a new HandleIntake. */
   public HandleIntake(Intake intake, BooleanSupplier supplier) {
@@ -44,6 +47,7 @@ public class HandleIntake extends CommandBase {
     if(m_intake.getCurrentArmState() == null){
       m_intake.setArmState(m_intake.getSelectedArmState());
     }
+    TimerCount = 0;
     setPosition = m_intake.getArmRelPos();
     sensorState = m_intake.getMagnetDigitalInput();
     isMoving = false;
@@ -53,7 +57,25 @@ public class HandleIntake extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    if(RobotContainer.getRaiseHangerButton()){
+      if (initTime == -1){
+        initTime = Timer.getFPGATimestamp();
+      }
+    }
+    if(initTime != -1 && !RobotContainer.getRaiseHangerButton()){
+      TimerCount += Timer.getFPGATimestamp() - initTime;
+      initTime = -1;
+    }
+
+    if(RobotContainer.getManualSwitchButton()){
+        m_intake.setArmMode(armModes.MANUAL);
+    }
+
+    if(RobotContainer.getEncoderSwitchButton()){
+      m_intake.setArmMode(armModes.ENCODER);
+      TimerCount = 0;
+    }
+     
     if(RobotContainer.getReverseIntakeButton()){
       m_intake.reverseIntakeMotor();
     }else if(RobotContainer.getRunIntakeButton()){
@@ -63,23 +85,23 @@ public class HandleIntake extends CommandBase {
 
     }
     
-    if(m_intake.getSelectedArmMode() == armModes.MANUAL){
+    if(m_intake.getCurrentArmMode() == armModes.MANUAL){
       if(RobotContainer.getLowerIntakeButton()){
-        m_intake.lowerIntakeArm();
-        isMoving = true;
+        m_intake.setIntakeArmPower(.9);
+        //isMoving = true;
 
       } else if(RobotContainer.getRaiseIntakeButton()){
-        m_intake.raiseIntakeArm();
-        isMoving = true;
+        m_intake.setIntakeArmPower(-.9);
+        //isMoving = true;
 
       } else {
-        if(isMoving){
+       /* if(isMoving){
           isMoving = false;
           setPosition = m_intake.getArmRelPos();
-        }
+        }*/
         m_intake.stopIntakeArm();
       }
-      
+      /*
       if(RobotContainer.getLockArmButton()){
         m_intake.resetArmRelPos();
       }
@@ -92,8 +114,8 @@ public class HandleIntake extends CommandBase {
         m_intake.stopIntakeArm();
       }
     } 
-      
-    } else if(m_intake.getSelectedArmMode() == armModes.MAGNETIC){
+      */
+    } /*else if(m_intake.getSelectedArmMode() == armModes.MAGNETIC){
       if((sensorState && m_intake.getCurrentArmState() == armStates.RAISED && RobotContainer.getLowerIntakeButton())){
         m_intake.setArmState(armStates.LOWERING);
       } else if(sensorState && m_intake.getCurrentArmState() == armStates.LOWERED && RobotContainer.getRaiseIntakeButton()){
@@ -129,15 +151,15 @@ public class HandleIntake extends CommandBase {
       if(m_intake.getCurrentArmState() == armStates.RAISED && !m_intake.getMagnetDigitalInput()){
         m_intake.lowerIntakeArm();
       }
-    }
-    if(m_intake.getSelectedArmMode() == armModes.ENCODER){
+    }*/
+    else if(m_intake.getCurrentArmMode() == armModes.ENCODER){
       /*if(RobotContainer.getRaiseIntakeButton()){
         m_intake.setGoal(Constants.IntakeConstants.encoderRaisedPosition);
       } else if (RobotContainer.getLowerIntakeButton()){
         m_intake.setGoal(Constants.IntakeConstants.encoderLoweredPosition);
       }*/
 
-      if(m_supplier.getAsBoolean()){
+      if(m_supplier.getAsBoolean() && m_intake.getCurrentArmState() != armStates.HOMING){
         m_intake.setArmState(armStates.RAISED);
       }else{
         m_intake.setArmState(armStates.LOWERED);
@@ -186,24 +208,28 @@ public class HandleIntake extends CommandBase {
       if(RobotContainer.getLockArmButton()){
         m_intake.setArmState(armStates.HOMING);
       }
-
+      if(TimerCount > Constants.IntakeConstants.TimerThreshold){
+        m_intake.setArmState(armStates.HOMING);
+      }
       if(m_intake.getCurrentArmState() == armStates.HOMING && !m_intake.isArmAboveRaised()){
         m_intake.raiseIntakeArm();
       }else if(m_intake.getCurrentArmState() == armStates.HOMING && m_intake.isArmAboveRaised()){
-        m_intake.setIntakeArmPower(-.6);
+        m_intake.setIntakeArmPower(-.7);
       }
 
 
       if(m_intake.getLmtSwitchInput() && (m_intake.getCurrentArmState() == armStates.RAISED || m_intake.getCurrentArmState() == armStates.HOMING)){
         m_intake.stopIntakeArm();
-        if(m_intake.getCurrentArmState() == armStates.HOMING){
+        if(m_intake.getCurrentArmState() == armStates.HOMING && TimerCount < Constants.IntakeConstants.TimerThreshold){
           m_intake.setArmState(armStates.RAISED);
         m_intake.resetArmRelPos();
         }
 
       }
 
-    }      
+    }
+    SmartDashboard.putNumber("Timer Count", TimerCount);   
+    SmartDashboard.putBoolean("isManual", m_intake.getCurrentArmMode() == armModes.MANUAL);
   }
 
   // Called once the command ends or is interrupted.

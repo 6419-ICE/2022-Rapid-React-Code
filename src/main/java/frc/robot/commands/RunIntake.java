@@ -5,40 +5,42 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Uptake;
 
-public class HandleShooter extends CommandBase {
-  /** Creates a new HandleShooter. */
-  private final Shooter m_shooter;
+public class RunIntake extends CommandBase {
+  /** Creates a new RunIntake. */
 
-  public HandleShooter(Shooter shooter) {
-    m_shooter = shooter;
-    addRequirements(m_shooter);
+  private final Intake m_intake;
+  private final Uptake m_uptake;
+  
+  public RunIntake(Intake intake, Uptake uptake) {
+    m_intake = intake;
+    m_uptake = uptake;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(m_uptake, m_intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooter.spoolDown();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    if(RobotContainer.getReverseIntakeButton()){
-      m_shooter.setPower(-.2);
-    }else {
-      m_shooter.setPower(0);
+    if(!m_uptake.isUptakeFull()){
+      m_uptake.runUptake();
     }
+    m_intake.runIntakeMotor();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+    m_intake.stopIntakeMotor();
+    m_uptake.stopUptake();
   }
 
   // Returns true when the command should end.

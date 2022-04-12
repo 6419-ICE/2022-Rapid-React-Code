@@ -22,6 +22,7 @@ import frc.robot.Constants.gamepadConstants;
 import frc.robot.commands.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -106,13 +107,16 @@ public class RobotContainer {
     JoystickButton shootHighButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.shooterHighButton);
     JoystickButton spoolUpLowButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.spoolUpLowButton);
     JoystickButton spoolUpHighButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.spoolUpHighButton);
-    JoystickButton centerOnGoalButton = new JoystickButton(mechanismJoystick, Constants.gamepadConstants.centerButton);
-
+    JoystickButton turboButton = new JoystickButton(gamepadController, 5);
+    JoystickButton centerOnGoalButton = new JoystickButton(gamepadController, 6);
     shootLowButton.whenHeld(new TurretSpoolAndFire(m_uptake, m_shooter, shooterStates.LOW), false);
     shootHighButton.whenHeld(new TurretSpoolAndFire(m_uptake, m_shooter, shooterStates.HIGH), false);
     spoolUpLowButton.whenHeld(new SpoolUpFire(m_uptake, m_shooter, shooterStates.LOW), false);
     spoolUpHighButton.whenHeld(new SpoolUpFire(m_uptake, m_shooter, shooterStates.HIGH), false);
-    centerOnGoalButton.whenHeld(new CenterAndFire(m_driveTrain, m_uptake, m_limelight, m_shooter, shooterStates.HIGH), false);
+    //turboButton.whenPressed(new InstantCommand(() -> {m_driveTrain.setMaxMotorSpeed(.6);}, m_driveTrain));
+    //turboButton.whenPressed(new InstantCommand(() -> {m_driveTrain.setMaxMotorSpeed(Constants.DrivetrainConstants.speedLmt);}, m_driveTrain));
+
+    centerOnGoalButton.whenHeld(new CenterAndFire(m_driveTrain, m_uptake, m_intake, m_limelight), false);
   }
   
   /*
@@ -157,7 +161,7 @@ public class RobotContainer {
     return mechanismJoystick.getRawButton(Constants.gamepadConstants.reverseIntakeButton);
   }
 
-  public static boolean getRunUptakeButton(){
+  public static boolean getEncoderSwitchButton(){
     return mechanismJoystick.getRawButton(Constants.gamepadConstants.runUptakeButton);
   }
 
@@ -173,20 +177,24 @@ public class RobotContainer {
     return mechanismJoystick.getRawButton(Constants.gamepadConstants.shooterLowButton);
   }
 
-  public static boolean getCenterButton(){
-    return mechanismJoystick.getRawButton(Constants.gamepadConstants.centerButton);
+  public static boolean getManualSwitchButton(){
+    return mechanismJoystick.getRawButton(Constants.gamepadConstants.manualSwitchButton);
   }
 
   public static boolean getLockArmButton(){
     return mechanismJoystick.getRawButton(Constants.gamepadConstants.lockArmButton);
   }
 
+  public static boolean getTurboButton(){
+    return gamepadController.getRawButton(5);
+  }
+
   public static double getDriveTrainForward(){
-    return Utilities.applyDeadband(-gamepadController.getRawAxis(Constants.gamepadConstants.kGamepadAxisLeftStickY), 0.03);
+    return Utilities.applyDeadband(-gamepadController.getRawAxis(Constants.gamepadConstants.kGamepadAxisLeftStickY), 0.01);
   }
 
   public static double getDriveTrainTurn(){
-    return Utilities.applyDeadband(gamepadController.getRawAxis(Constants.gamepadConstants.kGamepadAxisRightStickX), 0.03);
+    return Utilities.applyDeadband(gamepadController.getRawAxis(Constants.gamepadConstants.kGamepadAxisRightStickX), 0.01);
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

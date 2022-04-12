@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.*;
@@ -69,7 +70,7 @@ public class AutonomousShoot extends CommandBase {
     } 
     if (m_shooterState == shooterStates.LOW ){
       m_shooter.spoolUpLow();
-      if(m_shooter.timerReady(time, 1.5)){
+      if(m_shooter.timerReady(time, Constants.ShooterConstants.shootTimer)){
         m_uptake.runUptake();
         if(m_uptake.isCargoPresentTop()){
           m_uptake.runUptake();

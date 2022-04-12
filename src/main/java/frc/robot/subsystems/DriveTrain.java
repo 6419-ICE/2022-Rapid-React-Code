@@ -236,7 +236,7 @@ public class DriveTrain extends SubsystemBase {
 
    // setRobotTurnConfigs(m_rightInvert, m_rightConfig0); 
     
-    setMaxMotorSpeed(m_rightConfig0, m_leftConfig0, Constants.DrivetrainConstants.speedLmt);
+    setMaxMotorSpeed(m_rightConfig0, m_leftConfig0, .49);
     setMinMotorSpeed(m_rightConfig0, m_leftConfig0, 0);
     
     setConfigPIDSlot(m_leftConfig0.slot0, 

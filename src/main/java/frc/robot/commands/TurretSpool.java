@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Shooter.shooterStates;
@@ -51,6 +52,6 @@ public class TurretSpool extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_shooter.timerReady(time, 1.5);
+    return m_shooter.timerReady(time, Constants.ShooterConstants.shootTimer);
   }
 }

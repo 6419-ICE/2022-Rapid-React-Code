@@ -25,9 +25,10 @@ public class FourBallAuto extends SequentialCommandGroup {
     driveTrain.resetHeading();
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());paths/output/%s.wpilib.jsonpaths/output/
+    driveTrain.setMaxMotorSpeed(.49);
     addCommands(
       parallel(
-        new AutonomousMoveIntake(intake, uptake, armStates.RAISED, uptake::isUptakeFull, 0),
+        new AutonomousMoveIntake(intake, uptake, armStates.RAISED, uptake::isUptakeFull, 0).withTimeout(2),
     sequence(
       new WaitCommand(.5),
       parallel(
@@ -43,6 +44,7 @@ public class FourBallAuto extends SequentialCommandGroup {
         new TrajectoryCommand(TrajectoryPaths.getTrajectoryFromPath("paths/output/terminal-to-firstball.wpilib.json"), driveTrain),
         new TurretSpool(shooter, shooterStates.HIGH)
       ),
+      new WaitCommand(1),
       new TurretFire(shooter, uptake)
     );
   }

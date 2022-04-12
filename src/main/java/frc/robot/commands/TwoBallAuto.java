@@ -22,17 +22,14 @@ public class TwoBallAuto extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       parallel(
+        new AutonomousMoveIntake(intake, uptake, armStates.RAISED, uptake::isUptakeFull, 0).withTimeout(2),
+    sequence(
+      new WaitCommand(.5),
       parallel(
-        //new AutonomousMoveIntake(intake, armStates.LOWERING),
-        new TrajectoryCommand(TrajectoryPaths.getTrajectoryTwoBalls(), driveTrain)
-      ).withTimeout(3),
-      sequence(
-        new WaitCommand(1),
-      new TurretSpoolAndFire(uptake, shooter, shooterStates.HIGH).withTimeout(6)
-      )
-      /*new AutonomousCenterOnGoal(driveTrain, limelight),
-      new AutonomousShoot(uptake, shooter, shooterStates.HIGH, 5000)*/
-      )
+        new TrajectoryCommand(TrajectoryPaths.getTrajectoryTwoBalls2(), driveTrain),
+        new TurretSpool(shooter, shooterStates.HIGH)
+      ))),
+      new TurretFire(shooter, uptake).withTimeout(2.5)
     );
   }
 }

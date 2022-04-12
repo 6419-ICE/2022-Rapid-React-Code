@@ -32,7 +32,7 @@ public class Shooter extends SubsystemBase {
     m_shooterMotor.setInverted(true);
 
     m_shooterMotor.configOpenloopRamp(0.5);
-    m_shooterMotor.configClosedloopRamp(.75);
+    m_shooterMotor.configClosedloopRamp(.1);
 
     m_shooterMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 30);
     /* Config the peak and nominal outputs */
@@ -77,6 +77,11 @@ public class Shooter extends SubsystemBase {
 
   public double getShooterSpeed(){
     return m_shooterEncoder.getIntegratedSensorVelocity();
+  }
+
+  public void setPower(double power){
+    m_shooterMotor.set(ControlMode.PercentOutput, power);
+    
   }
 
   @Override

@@ -46,7 +46,7 @@ public class HandleDriveTrain extends CommandBase {
     m_driveTrain.drive(0, 0);
     m_driveTrain.resetEncoders();
     m_driveTrain.setMotorNeutralMode(NeutralMode.Brake);
-    m_driveTrain.setMaxMotorSpeed(Constants.DrivetrainConstants.speedLmt);
+    m_driveTrain.setMaxMotorSpeed(1);
   }
 
 
@@ -55,13 +55,27 @@ public class HandleDriveTrain extends CommandBase {
   public void execute() {
     double power = RobotContainer.getDriveTrainForward();
     double turn = RobotContainer.getDriveTrainTurn();
+
     power = m_fwdLimiter.calculate(Math.copySign(Math.abs(Math.pow(power, 2)), power));
     turn = m_turnLimiter.calculate(Math.copySign(Math.abs(Math.pow(turn, 2)), turn));
     /*power = Math.copySign(Math.abs(Math.pow(power, 2)), power) * Constants.DrivetrainConstants.speedLmt;
     turn = Math.copySign(Math.abs(Math.pow(turn, 2)), turn) * Constants.DrivetrainConstants.speedLmt;*/
-    m_driveTrain.arcadeDrive(power, turn * .6);
-    SmartDashboard.putNumber("Left Encoder Distance", m_driveTrain.getLeftDriveEncoderDistance());
+    if(!RobotContainer.getTurboButton()){
+      power = power * .7;
+      turn = turn *  .7;
+    }else{
+      power *= 1;
+      turn *= 1;
+    }
+    m_driveTrain.arcadeDrive(power, turn * .8);
+    SmartDashboard.putNumber("Left Encoder Distance", power);
     SmartDashboard.putNumber("Right Encoder Distance", m_driveTrain.getRightDriveEncoderDistance());
+    /*if(RobotContainer.getTurboButton()){
+      m_driveTrain.setMaxMotorSpeed(.6);
+    }else {
+      m_driveTrain.setMaxMotorSpeed(Constants.DrivetrainConstants.speedLmt);
+    }*/
+    SmartDashboard.putBoolean("Turbo Button", RobotContainer.getTurboButton());
   }
 
   // Called once the command ends or is interrupted.
